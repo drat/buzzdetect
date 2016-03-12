@@ -1,8 +1,32 @@
+Requirements
+============
+
+Python 2.7 (for twitter package), Django 1.9, PostgreSQL (for upsert).
+
+Install
+=======
+
 First, copy local.sh.example to local.sh and fill it with your credentials.
 Then, source local.sh
 
-You need postgresql.
+Then, pip install the repo.
 
-./manage.py twitter_stream follows your stream and add Tweets.
+Then, provision the database and create an admin::
 
-./manage.py twitter_retweets monitors retweets over time and add Retweets.
+    buzzdetect migrate
+    buzzdetect createsuperuser
+
+Usage
+=====
+
+Follow your twitter stream to create tweets::
+
+    buzzdetect twitter_stream
+
+Log retweets, run this command every minute or so::
+
+    buzzdetect twitter_retweets
+
+Run the development server::
+
+    buzzdetect runserver

@@ -25,6 +25,11 @@ setup(
             'freezegun',
         ],
     },
+    entry_points = {
+        'console_scripts': [
+            'buzzdetect = buzzdetect.manage:main',
+        ],
+    },
     classifiers = [
         'Development Status :: 1 - Planning',
         'Environment :: Web Environment',
@@ -38,4 +43,3 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
-
