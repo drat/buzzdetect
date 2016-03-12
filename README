@@ -9,7 +9,11 @@ Install
 First, copy local.sh.example to local.sh and fill it with your credentials.
 Then, source local.sh
 
-Then, pip install the repo.
+Then, pip install the repo::
+
+    # Remove [test] to install without test requirements, they are not
+    # necessary to test in tox
+    pip install -e git+https://github.com/jpic/buzzdetect.git#egg=buzzdetect[test]
 
 Then, provision the database and create an admin::
 
@@ -30,3 +34,8 @@ Log retweets, run this command every minute or so::
 Run the development server::
 
     buzzdetect runserver
+
+Run tests::
+
+    buzzdetect test tweets
+    # Or run tox from inside the repo
