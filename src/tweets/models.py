@@ -79,7 +79,6 @@ def process_retweets(sender, instance, **kwargs):
     delta = datetime.now(pytz.utc) - last.datetime
     minutes = delta.seconds / 60.0
 
-    print retweets, minutes
     instance.retweet_per_minute = 0 if not retweets else retweets / minutes
 
     instance.acceleration = (
