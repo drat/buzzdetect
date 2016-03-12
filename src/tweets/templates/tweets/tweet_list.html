@@ -1,0 +1,21 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<table>
+    <tbody>
+        {% for retweet in retweets %}
+        <tr>
+            <td>
+                {{ retweet.acceleration }}
+            </td>
+            <td>
+                {{ retweet.tweet_per_minute }}
+            </td>
+            <td>
+                {{ retweet.tweet }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

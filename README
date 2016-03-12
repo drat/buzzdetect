@@ -1,0 +1,8 @@
+First, copy local.sh.example to local.sh and fill it with your credentials.
+Then, source local.sh
+
+You need postgresql.
+
+./manage.py twitter_stream follows your stream and add Tweets.
+
+./manage.py twitter_retweets monitors retweets over time and add Retweets.

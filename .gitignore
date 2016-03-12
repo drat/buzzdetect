@@ -1,0 +1,5 @@
+*.sqlite3
+*.pyc
+*.egg-info
+local.sh
+.tox
