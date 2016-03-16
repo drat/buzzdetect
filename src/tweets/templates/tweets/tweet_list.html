@@ -8,36 +8,36 @@
                 Acceleration
             </th>
             <th>
-                Current RPM
-            </th>
-            <th>
                 Total RPM
             </th>
             <th>
-                Total
+                Current RPM
+            </th>
+            <th>
+                Total Retweet
             </th>
             <th>
                 Tweet
             </th>
         </tr>
-        {% for retweet in retweets %}
+        {% for tweet in tweets %}
         <tr>
             <td>
-                {{ retweet.acceleration }}
+                {{ tweet.last.acceleration }}
             </td>
             <td>
-                {{ retweet.retweet_per_minute|floatformat:"3" }}
+                {{ tweet.total_rtm|floatformat:"3" }}
             </td>
             <td>
-                {{ retweet.total_retweet_per_minute|floatformat:"3" }}
+                {{ tweet.last.retweet_per_minute|floatformat:"3" }}
             </td>
             <td>
-                {{ retweet.retweet_count }}
+                {{ tweet.last.retweet_count }}
             </td>
             <td>
                 <a
-                    href="https://twitter.com/statuses/{{ retweet.tweet.twitter_id }}"
-                    >{{ retweet.tweet.name }}</a>
+                    href="https://twitter.com/statuses/{{ tweet.last.tweet.twitter_id }}"
+                    >{{ tweet.last.tweet.name }}</a>
             </td>
         </tr>
         {% endfor %}

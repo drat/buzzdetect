@@ -30,5 +30,6 @@ def get_data(status_id):
 
     try:
         return twitter.statuses.show(_id=status_id)
-    except TwitterHTTPError:
+    except TwitterHTTPError as e:
+        print e
         return None

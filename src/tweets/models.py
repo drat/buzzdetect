@@ -16,6 +16,8 @@ class Tweet(models.Model):
     name = models.CharField(max_length=180)
     twitter_id = models.BigIntegerField()
     datetime = models.DateTimeField()
+    last = models.ForeignKey('retweets', null=True, related_name='last_of')
+    total_rtm = models.FloatField(null=True)
 
     def __unicode__(self):
         return u'#%s %s' % (self.twitter_id, self.name)
@@ -31,6 +33,12 @@ class Tweet(models.Model):
             return
 
         retweet.save()
+        self.last = retweet
+
+        delta = datetime.now(pytz.utc) - self.datetime
+        minutes = delta.seconds / 60.0
+        self.total_rtm = self.last.retweet_count / minutes
+        self.save()
 
     @classmethod
     def create_from_data(cls, data):
@@ -58,6 +66,10 @@ class Tweet(models.Model):
         retweet_per_minute = 0
         delta = datetime.now(pytz.utc) - tweet.datetime
         minutes = delta.seconds / 60.0
+
+        if not minutes:
+            return
+
         retweet_per_minute = data['retweet_count'] / minutes
 
         retweet = Retweets.objects.create(
