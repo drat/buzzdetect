@@ -3,19 +3,53 @@
 {% block content %}
 <table>
     <tbody>
+        <tr>
+            <th>
+                Acceleration
+            </th>
+            <th>
+                Current RPM
+            </th>
+            <th>
+                Total RPM
+            </th>
+            <th>
+                Total
+            </th>
+            <th>
+                Tweet
+            </th>
+        </tr>
         {% for retweet in retweets %}
         <tr>
             <td>
                 {{ retweet.acceleration }}
             </td>
             <td>
-                {{ retweet.tweet_per_minute }}
+                {{ retweet.retweet_per_minute|floatformat:"3" }}
             </td>
             <td>
-                {{ retweet.tweet }}
+                {{ retweet.total_retweet_per_minute|floatformat:"3" }}
+            </td>
+            <td>
+                {{ retweet.retweet_count }}
+            </td>
+            <td>
+                <a
+                    href="https://twitter.com/statuses/{{ retweet.tweet.twitter_id }}"
+                    >{{ retweet.tweet.name }}</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script type="text/javascript">
+function reload() {
+    window.location.reload();
+    setTimeout(reload, 1500);
+}
+
+setTimeout(reload, 1500);
+</script>
 {% endblock %}

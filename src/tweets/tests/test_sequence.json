@@ -13,7 +13,7 @@
         "acceleration": 0.0,
         "datetime": "2016-03-12T14:14:20Z",
         "retweet_count": 3,
-        "retweet_per_minute": 3.0,
+        "retweet_per_minute": 0.0,
         "tweet": 1
     },
     "model": "tweets.retweets",
@@ -32,7 +32,7 @@
 },
 {
     "fields": {
-        "acceleration": 0.0,
+        "acceleration": -3.0,
         "datetime": "2016-03-12T14:16:20Z",
         "retweet_count": 9,
         "retweet_per_minute": 3.0,
@@ -43,7 +43,7 @@
 },
 {
     "fields": {
-        "acceleration": 0.0,
+        "acceleration": -3.0,
         "datetime": "2016-03-12T14:17:20Z",
         "retweet_count": 12,
         "retweet_per_minute": 3.0,
@@ -54,7 +54,7 @@
 },
 {
     "fields": {
-        "acceleration": 15.0,
+        "acceleration": -3.0,
         "datetime": "2016-03-12T14:18:20Z",
         "retweet_count": 30,
         "retweet_per_minute": 18.0,
@@ -65,7 +65,7 @@
 },
 {
     "fields": {
-        "acceleration": -16.0,
+        "acceleration": -18.0,
         "datetime": "2016-03-12T14:19:20Z",
         "retweet_count": 32,
         "retweet_per_minute": 2.0,

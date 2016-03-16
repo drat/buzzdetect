@@ -14,7 +14,11 @@ class Command(BaseCommand):
         )
 
         for msg in twitter_userstream.user():
+            print 'Got msg', msg
+
             if 'id' not in msg:
                 continue
 
-            tweet, created, retweet = Tweet.create_from_msg(msg)
+            tweet, created, retweet = Tweet.create_from_data(msg)
+
+            print 'Saved tweet', tweet

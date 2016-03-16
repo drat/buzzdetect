@@ -1,0 +1,22 @@
+[
+{
+    "fields": {
+        "datetime": "2016-03-12T13:56:40Z",
+        "name": "original super tweet",
+        "twitter_id": 3108350
+    },
+    "model": "tweets.tweet",
+    "pk": 1
+},
+{
+    "fields": {
+        "acceleration": 0.0,
+        "datetime": "2016-03-12T14:14:20Z",
+        "retweet_count": 4,
+        "retweet_per_minute": 0.0,
+        "tweet": 1
+    },
+    "model": "tweets.retweets",
+    "pk": 1
+}
+]
