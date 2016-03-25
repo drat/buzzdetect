@@ -100,8 +100,19 @@ class Tweet(models.Model):
     datetime = models.DateTimeField()
     source = models.ForeignKey('Source')
 
-    # Denormalized field handled by calculate_friends_retweets
+    # Denormalized field handled by calculate_friends_retweets, on Tweet save
     friends_retweets = models.PositiveIntegerField(default=0)
+
+    # Denormalized field handled by calculate_total_rtm, on Retweets save
+    total_rtm = models.PositiveIntegerField(default=0)
+
+    # Denormalized field handled by calculate_last_retweets, on Retweets create
+    last_retweets = models.ForeignKey(
+        'Retweets',
+        null=True,
+        blank=True,
+        related_name='last_of',
+    )
 
     objects = TweetManager()
 
@@ -117,6 +128,15 @@ class Tweet(models.Model):
         ).count()
 
         return count
+
+    def calculate_total_rtm(self):
+        if not self.last_retweets_id:
+            return
+
+        delta = self.last_retweets.datetime - self.datetime
+        minutes = delta.seconds / 60.0
+
+        return self.last_retweets.retweet_count / minutes
 
     def __unicode__(self):
         return u'#%s %s' % (self.id, self.text)
@@ -147,7 +167,7 @@ def calculate_friends_retweets(sender, instance, **kwargs):
                     'previous': previous,
                 }))
             )
-models.post_save.connect(calculate_friends_retweets, sender=Tweet)
+models.signals.post_save.connect(calculate_friends_retweets, sender=Tweet)
 
 
 class Retweets(models.Model):
@@ -165,14 +185,10 @@ class Retweets(models.Model):
 
 
 def process_retweets(sender, instance, **kwargs):
-    last = Retweets.objects.filter(
-        tweet=instance.tweet
-    ).order_by(
-        '-datetime'
-    ).first()
-
-    if last is None:
+    if not instance.tweet.last_retweets_id:
         return
+
+    last = instance.tweet.last_retweets
 
     retweets = instance.retweet_count - last.retweet_count
     delta = datetime.now(pytz.utc) - last.datetime
@@ -184,3 +200,18 @@ def process_retweets(sender, instance, **kwargs):
         instance.retweet_per_minute - last.retweet_per_minute
     )
 models.signals.pre_save.connect(process_retweets, sender=Retweets)
+
+
+def calculate_total_rtm(sender, instance, **kwargs):
+    instance.tweet.total_rtm = instance.tweet.calculate_total_rtm()
+    instance.tweet.save()
+models.signals.post_save.connect(process_retweets, sender=Retweets)
+
+
+def calculate_last_retweets(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    instance.tweet.last_retweets = instance
+    instance.tweet.save()
+models.signals.post_save.connect(calculate_last_retweets, sender=Retweets)

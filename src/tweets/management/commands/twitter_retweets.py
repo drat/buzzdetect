@@ -13,19 +13,13 @@ class Command(BaseCommand):
         )
 
         tweets += list(
-            Tweet.objects.order_by('-last__acceleration')[:7]
-        )
-
-        tweets += list(
-            Tweet.objects.filter(
-                skips__lte=3,
-            ).order_by('skips', '-total_rtm')[:5]
+            Tweet.objects.order_by('-last_retweets__acceleration')[:7]
         )
 
         for tweet in set(tweets):
             print "Flashing tweet", tweet
 
-            data = get_data(tweet.twitter_id)
+            data = get_data(tweet.id)
 
             if data == 'deleted':
                 tweet.delete()
@@ -34,4 +28,7 @@ class Command(BaseCommand):
             if not data:
                 continue
 
-            tweet.create_retweet_from_data(data)
+            retweets = Retweets.objects.create(
+                tweet=tweet,
+                retweet_count=data['retweet_count'],
+            )
