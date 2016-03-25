@@ -22,14 +22,27 @@ def get_auth():
     return oauth
 
 
-def get_data(status_id):
+def get_twitter():
     global twitter
 
     if twitter is None:
         twitter = Twitter(auth=get_auth())
 
+    return twitter
+
+
+def get_data(status_id):
+    twitter = get_twitter()
+
     try:
         return twitter.statuses.show(_id=status_id)
     except TwitterHTTPError as e:
-        print e
+        if 'Twitter sent status 404 for URL' in e.message:
+            return 'deleted'
         return None
+
+
+def get_source_data(twitter_id):
+    twitter = get_twitter()
+
+    return twitter.users.show(_id=twitter_id)

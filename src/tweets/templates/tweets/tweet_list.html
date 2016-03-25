@@ -5,39 +5,15 @@
     <tbody>
         <tr>
             <th>
-                Acceleration
-            </th>
-            <th>
-                Total RPM
-            </th>
-            <th>
-                Current RPM
-            </th>
-            <th>
-                Total Retweet
-            </th>
-            <th>
                 Tweet
             </th>
         </tr>
         {% for tweet in tweets %}
         <tr>
             <td>
-                {{ tweet.last.acceleration }}
-            </td>
-            <td>
-                {{ tweet.total_rtm|floatformat:"3" }}
-            </td>
-            <td>
-                {{ tweet.last.retweet_per_minute|floatformat:"3" }}
-            </td>
-            <td>
-                {{ tweet.last.retweet_count }}
-            </td>
-            <td>
                 <a
-                    href="https://twitter.com/statuses/{{ tweet.last.tweet.twitter_id }}"
-                    >{{ tweet.last.tweet.name }}</a>
+                    href="https://twitter.com/statuses/{{ tweet.id }}"
+                    >{{ tweet.text }}</a>
             </td>
         </tr>
         {% endfor %}

@@ -1,22 +1,37 @@
 from django.core.management.base import BaseCommand
 
-from tweets.models import Tweet
+from tweets.models import Tweet, Retweets
 from tweets.utils import get_data
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        tweets = list(Tweet.objects.filter(last=None)[:20])
+        tweets = list(
+            Tweet.objects.exclude(
+                total_rtm=None,
+            ).order_by('-total_rtm')[:3]
+        )
 
-        if 20 - len(tweets) > 0:
-            tweets = Tweet.objects.order_by('-total_rtm')[:20-len(tweets)]
+        tweets += list(
+            Tweet.objects.order_by('-last__acceleration')[:7]
+        )
 
-        for tweet in tweets:
+        tweets += list(
+            Tweet.objects.filter(
+                skips__lte=3,
+            ).order_by('skips', '-total_rtm')[:5]
+        )
+
+        for tweet in set(tweets):
+            print "Flashing tweet", tweet
+
             data = get_data(tweet.twitter_id)
+
+            if data == 'deleted':
+                tweet.delete()
+                continue
 
             if not data:
                 continue
 
             tweet.create_retweet_from_data(data)
-
-            print 'Saved retweet for', tweet
