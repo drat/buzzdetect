@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.template.defaultfilters import slugify
 
 from datetime import datetime, timedelta
 from dateutil import parser
@@ -33,7 +34,7 @@ class Command(BaseCommand):
 
             tweet = Tweet.objects.create_from_data(msg)
 
-            print 'Saved tweet', tweet
+            print u'Saved tweet %s' % slugify(tweet)
 
     def save_friends(self, ids):
         for l in [ids[i:i+100] for i in xrange(0, len(ids), 100)]:
@@ -43,4 +44,4 @@ class Command(BaseCommand):
 
             for user in data:
                 Source.objects.create_from_data(user, friend=True)
-                print 'Following', user['name']
+                print u'Following %s' % slugify(user['name'])
