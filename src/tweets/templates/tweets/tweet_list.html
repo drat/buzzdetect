@@ -1,24 +1,50 @@
 {% extends 'admin/base.html' %}
 
+{% load humanize %}
+
 {% block content %}
-<table>
-    <tbody>
-        <tr>
-            <th>
-                Tweet
-            </th>
-        </tr>
-        {% for tweet in tweets %}
-        <tr>
-            <td>
-                <a
-                    href="https://twitter.com/statuses/{{ tweet.id }}"
-                    >{{ tweet.text }}</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for tweet in tweets %}
+<div class="tweet">
+    <div class="source">
+        <a href="https://twitter.com/users/{{ tweet.source.id }}">{{ tweet.source }}</a>
+    </div>
+    <div class="body">
+        {{ tweet.text }}
+    </div>
+    <div class="link">
+        <a
+            href="https://twitter.com/statuses/{{ tweet.id }}"
+        >https://twitter.com/statuses/{{ tweet.id }}</a>
+    </div>
+    <div class="stats">
+        <table>
+            <tr>
+                <td>
+                    {{ tweet.datetime|naturaltime }}
+                </td>
+                <td>
+                    Friends retweets
+                </td>
+                <td>
+                    {{ tweet.friends_retweets }}
+                </td>
+                <td>
+                    Total retweet per minute
+                </td>
+                <td>
+                    {{ tweet.total_rtm }}
+                </td>
+                <td>
+                    Acceleration
+                </td>
+                <td>
+                    {{ tweet.last_retweets.acceleration }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endfor %}
 
 <script type="text/javascript">
 function reload() {

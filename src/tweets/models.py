@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from dateutil import parser
 
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.db import models
 from django import template
@@ -38,6 +39,9 @@ class Source(models.Model):
     friend = models.BooleanField(default=False)
 
     objects = SourceManager()
+
+    def __unicode__(self):
+        return u'@%s' % self.name
 
 
 class TweetManager(models.Manager):
@@ -131,7 +135,7 @@ class Tweet(models.Model):
 
     def calculate_total_rtm(self):
         if not self.last_retweets_id:
-            return
+            return 0
 
         delta = self.last_retweets.datetime - self.datetime
         minutes = delta.seconds / 60.0
@@ -165,7 +169,9 @@ def calculate_friends_retweets(sender, instance, **kwargs):
                 ).render(template.Context({
                     'tweet': target,
                     'previous': previous,
-                }))
+                })),
+                'noreply@bd.yourlabs.org',
+                User.objects.values_list('email', flat=True),
             )
 models.signals.post_save.connect(calculate_friends_retweets, sender=Tweet)
 
@@ -194,7 +200,8 @@ def process_retweets(sender, instance, **kwargs):
     delta = datetime.now(pytz.utc) - last.datetime
     minutes = delta.seconds / 60.0
 
-    instance.retweet_per_minute = 0 if not retweets else retweets / minutes
+    if minutes:
+        instance.retweet_per_minute = 0 if not retweets else retweets / minutes
 
     instance.acceleration = (
         instance.retweet_per_minute - last.retweet_per_minute
@@ -202,16 +209,8 @@ def process_retweets(sender, instance, **kwargs):
 models.signals.pre_save.connect(process_retweets, sender=Retweets)
 
 
-def calculate_total_rtm(sender, instance, **kwargs):
+def tweet_precalculation(sender, instance, **kwargs):
+    instance.tweet.last_retweets = instance
     instance.tweet.total_rtm = instance.tweet.calculate_total_rtm()
     instance.tweet.save()
-models.signals.post_save.connect(process_retweets, sender=Retweets)
-
-
-def calculate_last_retweets(sender, instance, created, **kwargs):
-    if not created:
-        return
-
-    instance.tweet.last_retweets = instance
-    instance.tweet.save()
-models.signals.post_save.connect(calculate_last_retweets, sender=Retweets)
+models.signals.post_save.connect(tweet_precalculation, sender=Retweets)

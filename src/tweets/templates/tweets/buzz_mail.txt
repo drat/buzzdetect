@@ -1,0 +1,8 @@
+Tweet just got from {{ previous }} to {{ tweet.friends_retweets }} friends
+retweet:
+
+{{ tweet.text }}
+
+Url:
+
+{{ tweet.get_twitter_url }}

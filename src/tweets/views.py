@@ -21,7 +21,11 @@ class TweetList(generic.TemplateView):
         )
 
         c['tweets'] = Tweet.objects.filter(
-            friends_retweets__gte=int(self.request.GET.get('min', 1))
+            friends_retweets__gte=int(self.request.GET.get('min', 2)),
+            parent=None,
+        ).select_related(
+            'source',
+            'last_retweets',
         )
 
         if not self.request.GET.get('anytime', None):
@@ -30,7 +34,8 @@ class TweetList(generic.TemplateView):
             )
 
         c['tweets'] = c['tweets'].order_by(
-            '-friends_retweets'
+            '-friends_retweets',
+            '-last_retweets__acceleration',
         )
 
         return c
