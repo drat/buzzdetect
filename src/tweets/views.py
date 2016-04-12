@@ -15,13 +15,15 @@ class TweetList(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         c = super(TweetList, self).get_context_data(*args, **kwargs)
 
-        min_datetime = (
+        c['min_datetime'] = (
             datetime.now(tz=pytz.utc)
             - timedelta(minutes=30)
         )
 
+        c['min_friends_retweets'] = int(self.request.GET.get('min', 2))
+
         c['tweets'] = Tweet.objects.filter(
-            friends_retweets__gte=int(self.request.GET.get('min', 2)),
+            friends_retweets__gte=c['min_friends_retweets'],
             parent=None,
         ).select_related(
             'source',
@@ -30,7 +32,7 @@ class TweetList(generic.TemplateView):
 
         if not self.request.GET.get('anytime', None):
             c['tweets'] = c['tweets'].filter(
-                datetime__gte=min_datetime,
+                datetime__gte=c['min_datetime'],
             )
 
         c['tweets'] = c['tweets'].order_by(

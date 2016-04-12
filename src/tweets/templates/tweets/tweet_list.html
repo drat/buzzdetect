@@ -1,6 +1,29 @@
 {% extends 'admin/base.html' %}
 
 {% load humanize %}
+{% load tz %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'tweets:tweet_list' %}?anytime=1">All tweets</a>
+    /
+    <a href="{% url 'tweets:tweet_list' %}">Recent tweets</a>
+</div>
+{% endblock %}
+
+{% block branding %}
+{% timezone "Europe/Paris" %}
+
+<h1>
+Tweets
+{% if 'anytime' not in request.GET %}
+since {{ min_datetime }}
+{% endif %}
+with at least {{ min_friends_retweets }} friends retweet
+</h1>
+
+{% endtimezone %}
+{% endblock %}
 
 {% block content %}
 {% for tweet in tweets %}
@@ -44,6 +67,14 @@
         </table>
     </div>
 </div>
+{% empty %}
+<h1>No matching tweet found</h1>
+
+{% if 'anytime' not in request.GET %}
+<p>
+<a href="?anytime=1">See the complete list</a>
+</p>
+{% endif %}
 {% endfor %}
 
 <script type="text/javascript">
