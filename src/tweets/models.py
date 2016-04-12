@@ -84,7 +84,7 @@ class TweetManager(models.Manager):
         retweet = Retweets.objects.create(
             tweet=target,
             retweet_count=retweet_count,
-            retweet_per_minute=retweet_count / minutes,
+            retweet_per_minute=retweet_count / minutes if minutes else retweet_count,
             acceleration=0,
         )
 
@@ -140,7 +140,7 @@ class Tweet(models.Model):
         delta = self.last_retweets.datetime - self.datetime
         minutes = delta.seconds / 60.0
 
-        return self.last_retweets.retweet_count / minutes
+        return self.last_retweets.retweet_count / minutes if minutes else 0
 
     def __unicode__(self):
         return u'#%s %s' % (self.id, self.text)
