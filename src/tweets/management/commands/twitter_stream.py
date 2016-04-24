@@ -4,8 +4,10 @@ from django.template.defaultfilters import slugify
 from datetime import datetime, timedelta
 from dateutil import parser
 
-from tweets.models import Tweet, Source
-from tweets.utils import get_auth, get_twitter
+import threading
+
+from tweets.models import Retweets, Source, Tweet
+from tweets.utils import get_auth, get_data, get_twitter
 
 from twitter import TwitterStream
 
@@ -33,6 +35,21 @@ class Command(BaseCommand):
 
 
             tweet = Tweet.objects.create_from_data(msg)
+
+            if 'retweeted_status' not in msg:
+                def get_retweets():
+                    data = get_data(tweet.id)
+
+                    Retweets.objects.create(
+                        tweet=tweet,
+                        retweet_count=data['retweet_count'],
+                        seconds_after_tweet=120,
+                    )
+                    print u'Saved retweets for %s after %s' % (
+                        slugify(tweet),
+                        120,
+                    )
+                threading.Timer(120, get_retweets).start()
 
             print u'Saved tweet %s' % slugify(tweet)
 

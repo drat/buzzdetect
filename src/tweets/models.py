@@ -183,6 +183,12 @@ class Retweets(models.Model):
     retweet_per_minute = models.FloatField(default=0, db_index=True)
     acceleration = models.FloatField(default=0, db_index=True)
 
+    seconds_after_tweet = models.PositiveIntegerField(
+        default=None,
+        null=True,
+        db_index=True,
+    )
+
     class Meta:
         ordering = ('acceleration',)
         unique_together = (
