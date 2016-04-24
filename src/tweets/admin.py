@@ -11,3 +11,10 @@ class TweetAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Tweet, TweetAdmin)
+
+
+class SourceAdmin(admin.ModelAdmin):
+    list_filter = (
+        'friend',
+    )
+admin.site.register(Source)
