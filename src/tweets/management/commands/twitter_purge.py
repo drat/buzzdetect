@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand
@@ -12,7 +14,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         min_datetime = (
             datetime.now(tz=pytz.utc)
-            - timedelta(hours=10)
+            - timedelta(hours=
+                os.environ.get(
+                    'DELETE_TWEETS_WITH_MORE_HOURS_THAN'
+                )
+            )
         )
 
         old = Tweet.objects.filter(
