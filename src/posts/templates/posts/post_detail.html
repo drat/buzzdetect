@@ -1,0 +1,49 @@
+{% extends 'posts/base.html' %}
+
+{% load humanize %}
+{% load tz %}
+{% load tweets_tags %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:posts_post_changelist' %}">All Posts</a>
+    /
+    <a href="{{ object.poster.get_absolute_url }}">{{ object.poster }}</a>
+    /
+    <a href="{% url 'admin:posts_post_changelist' %}?poster__id__exact={{ object.poster.pk }}">Posts</a>
+    /
+    <a href="{{ object.get_absolute_url }}">#{{ object.upstream_id }}</a>
+</div>
+{% endblock %}
+
+{% block branding %}
+<h1>{{ object }}</h1>
+{% endblock %}
+
+{% block content %}
+<div data-tweet-id="{{ object.upstream_id }}"></div>
+
+{% if object.children.all %}
+<h2>Reposts</h2>
+<table>
+{%  for child in object.children.all %}
+    <tr>
+        <td>
+            <a href="{{ child.poster.get_absolute_url }}">{{ child.poster }}</a>
+        </td>
+        <td>
+            <a href="{{ child.get_absolute_url }}">{{ child.datetime|naturaltime }}</a>
+        </td>
+    </tr>
+{%  endfor %}
+</table>
+{% endif %}
+
+{% if object.parent %}
+It is a repost of
+<a href="{{ object.parent.get_absolute_url }}">{{ object.parent }}</a>
+originnaly by
+<a href="{{ object.parent.poster.get_absolute_url }}">{{ object.parent.poster }}</a>
+{% endif %}
+
+{% endblock %}

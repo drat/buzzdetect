@@ -1,56 +1,88 @@
+import threading
+
 from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand
+from django.template.defaultfilters import slugify
 
-from tweets.models import Tweet, Retweets
-from tweets.utils import get_data
+from posts.models import Post, Poster, Stat
+from tweets.utils import get_twitter
 
 import pytz
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        min_datetime = (
-            datetime.now(tz=pytz.utc)
-            - timedelta(minutes=100)
-        )
+        self.monitor()
 
-        recent_leafs = Tweet.objects.filter(
+    @staticmethod
+    def monitor():
+        twitter = get_twitter()
+
+        now = datetime.now(tz=pytz.utc)
+
+        all_tweets = Post.objects.filter(
             parent=None,
-            datetime__gte=min_datetime,
+        ).order_by(
+            '-datetime',
         )
 
-        # First we want tweets with most retweets
-        tweets = list(
-            recent_leafs.filter(
-                friends_retweets__gte=2
-            ).order_by(
-                '-friends_retweets'
-            )[:10]
+        recent = all_tweets.filter(
+            datetime__gte=now - timedelta(minutes=5),
         )
 
-        # Let's check random buzz while we're at it
-        tweets += list(
-            recent_leafs.order_by('-total_rtm')[:7]
-        )
-
-        tweets += list(
-            recent_leafs.order_by('-last_retweets__acceleration')[:7]
-        )
-
-        for tweet in set(tweets):
-            print "Flashing tweet", tweet
-
-            data = get_data(tweet.id)
-
-            if data == 'deleted':
-                tweet.delete()
-                continue
-
-            if not data:
-                continue
-
-            retweets = Retweets.objects.create(
-                tweet=tweet,
-                retweet_count=data['retweet_count'],
+        def get_older_tweets(min_minutes, max_minutes, stats_minutes):
+            return all_tweets.filter(
+                datetime__lt=now - timedelta(minutes=min_minutes),
+                datetime__gte=now - timedelta(minutes=max_minutes),
+            ).exclude(
+                id__in=Stat.objects.filter(
+                    added__gte=now - timedelta(minutes=stats_minutes),
+                ).order_by('-added').values_list('post_id')
             )
+
+        tweets = list(recent)
+        series = (
+            (5, 30, 1),
+            (30, 100, 5),
+            (100, 200, 10),
+            (200, 300, 20),
+            (300, 1000, 60),
+            (1000, 10000, 120),
+        )
+
+        for args in series:
+            if len(tweets) >= 100:
+                print 'Stopped at', args
+                break
+            tweets += get_older_tweets(*args)
+
+        tweets_dict = {
+            str(t.upstream_id): t for t in list(tweets)
+        }
+
+        ids = ','.join(tweets_dict.keys()[:100])
+
+        if ids:
+            data = twitter.statuses.lookup(_id=ids)
+
+            for tweet_data in data:
+                tweet = tweets_dict[str(tweet_data['id'])]
+                reposts = tweet_data['retweet_count']
+                stat = tweet.stat_set.create(reposts=reposts)
+                tweet.last_stat = stat
+
+                print u'Saved %s retweets for #%s aged %s' % (
+                    reposts,
+                    tweet.upstream_id,
+                    now - tweet.added,
+                )
+
+            print 'Done !'
+
+        # We can call this API 60 times per 15-minutes window that's every 15
+        # seconds. Let's use every 20 seconds for now.
+        threading.Timer(
+            20,
+            Command.monitor,
+        ).start()

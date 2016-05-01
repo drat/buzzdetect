@@ -1,0 +1,129 @@
+{% extends 'posts/base.html' %}
+
+{% load humanize %}
+{% load tz %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:posts_post_changelist' %}">All posts</a>
+</div>
+{% endblock %}
+
+{% block branding %}
+{% timezone "Europe/Paris" %}
+
+
+<h1>
+Tweets
+{% if 'anytime' not in request.GET %}
+since {{ min_datetime }}
+{% endif %}
+with at least {{ min_friends_retweets }} friends retweet
+</h1>
+
+{% endtimezone %}
+{% endblock %}
+
+{% block content %}
+<form method="GET" action="">
+{{ form }}
+<input type="submit" value="Filter" />
+</form>
+
+{% for object in object_list %}
+<div class="tweet">
+    <div class="source">
+        <a href="{{ object.poster.get_absolute_url }}">
+            {{ object.poster }}
+        </a>
+    </div>
+    <blockquote class="body" data-twitter-id="{{ object.upstream_id }}">
+        {{ object.content }}
+        {{ object.datetime|naturaltime }}
+    </blockquote>
+    <div class="link">
+        <a href="{{ object.get_absolute_url }}">
+            {{ object.upstream_id }}
+        </a>
+    </div>
+    <div class="stats">
+        <table>
+            <tr>
+                <td>
+                    Reposts
+                </td>
+                <td>
+                    {{ object.stat_after_two_minute.reposts }}
+                </td>
+                <td>
+                    <abbr title="Reposts by Friends">FR</abbr>
+                </td>
+                <td>
+                    {{ object.stat_after_two_minute.friends_reposts }}
+                </td>
+                <td>
+                    Speed
+                </td>
+                <td>
+                    {{ object.stat_after_two_minute.speed }}
+                </td>
+                <td>
+                    Accel
+                </td>
+                <td>
+                    {{ object.stat_after_two_minute.acceleration }}
+                </td>
+                <td>
+                    Repost per follower
+                </td>
+                <td>
+                    {{ object.stat_after_two_minute.reposts_per_followers_count }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Reposts
+                </td>
+                <td>
+                    {{ object.last_stat.reposts }}
+                </td>
+                <td>
+                    <abbr title="Reposts by Friends">FR</abbr>
+                </td>
+                <td>
+                    {{ object.last_stat.friends_reposts }}
+                </td>
+                <td>
+                    Speed
+                </td>
+                <td>
+                    {{ object.last_stat.speed }}
+                </td>
+                <td>
+                    Accel
+                </td>
+                <td>
+                    {{ object.last_stat.acceleration }}
+                </td>
+                <td>
+                    Repost per follower
+                </td>
+                <td>
+                    {{ object.last_stat.reposts_per_followers_count }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% empty %}
+<h1>No matching tweet found</h1>
+{% endfor %}
+
+<script type="text/javascript">
+function reload() {
+    window.location.reload();
+}
+
+setTimeout(reload, 22000);
+</script>
+{% endblock %}

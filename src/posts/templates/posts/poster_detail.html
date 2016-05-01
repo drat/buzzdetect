@@ -1,0 +1,30 @@
+{% extends 'posts/base.html' %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:posts_poster_changelist' %}">Posters</a>
+    /
+    <a href="{{ object.get_absolute_url }}">{{ object }}</a>
+</div>
+{% endblock %}
+
+{% block branding %}
+<h1>{{ object }}</h1>
+{% endblock %}
+
+{% block content %}
+<table>
+    {% for key, value in table %}
+    <tr>
+        <th>
+            {{ key }}
+        </th>
+        <td>
+            {{ value }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'admin:posts_post_changelist' %}?poster__id__exact={{ object.pk }}">Posts</a>
+{% endblock %}

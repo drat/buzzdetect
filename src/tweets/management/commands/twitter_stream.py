@@ -1,17 +1,16 @@
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
+from django.conf import settings
 
-from datetime import datetime, timedelta
 from dateutil import parser
 
 import threading
 
-from tweets.models import Retweets, Source, Tweet
+from posts.models import Post, Poster
+
 from tweets.utils import get_auth, get_data, get_twitter
 
 from twitter import TwitterStream
-
-import pytz
 
 
 class Command(BaseCommand):
@@ -29,28 +28,18 @@ class Command(BaseCommand):
                 self.save_friends(msg['friends'])
                 continue
 
+            if 'delete' in msg and 'status' in msg['delete']:
+                Post.objects.filter(
+                    upstream_id=msg['delete']['status']['id']
+                ).delete()
+                print 'Deleted', msg
+                continue
+
             if 'id' not in msg:
                 print 'Skipping because it has no id'
                 continue
 
-
-            tweet = Tweet.objects.create_from_data(msg)
-
-            if 'retweeted_status' not in msg:
-                def get_retweets():
-                    data = get_data(tweet.id)
-
-                    Retweets.objects.create(
-                        tweet=tweet,
-                        retweet_count=data['retweet_count'],
-                        seconds_after_tweet=120,
-                    )
-                    print u'Saved retweets for %s after %s' % (
-                        slugify(tweet),
-                        120,
-                    )
-                threading.Timer(120, get_retweets).start()
-
+            tweet = self.tweet_get_or_create(msg)
             print u'Saved tweet %s' % slugify(tweet)
 
     def save_friends(self, ids):
@@ -60,5 +49,43 @@ class Command(BaseCommand):
             )
 
             for user in data:
-                Source.objects.create_from_data(user, friend=True)
+                tweeter = self.tweetter_get_or_create(user, friend=True)
                 print u'Following %s' % slugify(user['name'])
+
+    def tweet_get_or_create(self, data):
+        parent = None
+
+        if 'retweeted_status' in data:
+            parent = self.tweet_get_or_create(data['retweeted_status'])
+
+        poster = self.tweetter_get_or_create(data['user'])
+
+        defaults = dict(
+            parent=parent,
+            poster=poster,
+            datetime=parser.parse(data['created_at']),
+            content=data['text'],
+        )
+
+        obj, created = Post.objects.update_or_create(
+            upstream_id=data['id'],
+            defaults=defaults,
+        )
+
+        return obj
+
+    def tweetter_get_or_create(self, data, friend=None):
+        defaults = dict(
+            name=data['name'],
+            followers_count=data['followers_count'],
+        )
+
+        if friend is not None:
+            defaults['friend'] = friend
+
+        obj, created = Poster.objects.update_or_create(
+            upstream_id=data['id'],
+            defaults=defaults,
+        )
+
+        return obj
