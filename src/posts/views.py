@@ -52,8 +52,15 @@ class PostDetail(generic.DetailView):
             Prefetch(
                 'children',
                 queryset=Post.objects.select_related('poster'),
-            )
-        ).select_related('parent__poster')
+            ),
+            Prefetch(
+                'stat_set',
+                queryset=Stat.objects.order_by('added'),
+            ),
+        ).select_related(
+            'parent__poster',
+            'poster',
+        )
 
 
 class PostList(generic.ListView):

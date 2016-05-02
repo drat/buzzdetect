@@ -2,7 +2,7 @@
 
 {% load humanize %}
 {% load tz %}
-{% load tweets_tags %}
+{% load posts_tags %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -45,5 +45,27 @@ It is a repost of
 originnaly by
 <a href="{{ object.parent.poster.get_absolute_url }}">{{ object.parent.poster }}</a>
 {% endif %}
+
+<h2>Stats</h2>
+<table>
+    <tr>
+        <th>Seconds</th>
+        <th>Reposts</th>
+        <th>Speed</th>
+        <th>Accel</th>
+        <th>Reposts / Followers</th>
+        <th>Friends reposts</th>
+    </tr>
+{% for stat in object.stat_set.all %}
+    <tr>
+        <td>{{ stat.added|seconds_since:object.datetime }}</td>
+        <td>{{ stat.reposts }}</td>
+        <td>{{ stat.speed }}</td>
+        <td>{{ stat.acceleration }}</td>
+        <td>{{ stat.reposts_per_followers_count }}</td>
+        <td>{{ stat.friends_reposts }}</td>
+    </tr>
+{% endfor %}
+</table>
 
 {% endblock %}
