@@ -72,14 +72,17 @@ class PostList(generic.ListView):
 
         order_by = self.request.GET.get('order_by', 'friends_reposts')
         filter_on_stat = self.request.GET.get('filter_on_stat', 'current')
-        max_age_in_minutes = self.request.GET.get('max_age_in_minutes', '30')
+        max_age_in_minutes = int(self.request.GET.get('max_age_in_minutes', '30'))
         min_friends_reposts = self.request.GET.get('min_friends_reposts', '2')
 
-        posts = Post.objects.filter(
-            datetime__gte=datetime.now(tz=pytz.utc) - timedelta(
-                minutes=int(max_age_in_minutes)
-            ),
-        )
+        posts = Post.objects.all()
+
+        if max_age_in_minutes:
+            posts = posts.filter(
+                datetime__gte=datetime.now(tz=pytz.utc) - timedelta(
+                    minutes=int(max_age_in_minutes)
+                ),
+            )
 
         if filter_on_stat == 'current':
             stat = 'last_stat'
@@ -91,12 +94,17 @@ class PostList(generic.ListView):
                 '%s__friends_reposts__gte' % stat: min_friends_reposts
             })
 
+        if order_by == 'time':
+            order_by = '-datetime'
+        else:
+            order_by = '-%s__%s' % (stat, order_by)
+
         q = posts.select_related(
             'poster',
             'last_stat',
             'stat_after_two_minute',
         ).order_by(
-            '-%s__%s' % (stat, order_by)
+            order_by
         )[:30]
 
         return q
