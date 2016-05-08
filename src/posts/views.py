@@ -73,7 +73,7 @@ class PostList(generic.ListView):
         order_by = self.request.GET.get('order_by', 'friends_reposts')
         filter_on_stat = self.request.GET.get('filter_on_stat', 'current')
         max_age_in_minutes = int(self.request.GET.get('max_age_in_minutes', '30'))
-        min_friends_reposts = self.request.GET.get('min_friends_reposts', '2')
+        min_friends_reposts = int(self.request.GET.get('min_friends_reposts', '2'))
 
         posts = Post.objects.all()
 
