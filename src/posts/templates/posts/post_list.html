@@ -31,7 +31,7 @@ with at least {{ min_friends_retweets }} friends retweet
 </form>
 
 {% for object in object_list %}
-<div class="tweet">
+<div class="tweet" id="tweet-{{ object.pk }}">
     <div class="source">
         <a href="{{ object.poster.get_absolute_url }}">
             {{ object.poster }}
@@ -119,11 +119,37 @@ with at least {{ min_friends_retweets }} friends retweet
 <h1>No matching tweet found</h1>
 {% endfor %}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script type="text/javascript">
-function reload() {
-    window.location.reload();
-}
+$(document).ready(function() {
 
-setTimeout(reload, 22000);
+function reload() {
+    $.ajax(
+        window.location.href,
+        {
+            success: function(data, textStatus, jqXHR) {
+                $(data).find('.tweet').each(function() {
+                    console.log($(this), $(this).index());
+                    div = $('#' + $(this).attr('id'));
+                    if (div.length) {
+                        // tweet exists with same index: continue
+                        // tweet exists with different index: move
+                        if (div.index() != $(this).index()) {
+                            $('.tweet').eq($(this).index()).before(div);
+                        }
+                    } else {
+                        // tweet does not exist: add
+                        $('.tweet').eq($(this).index()).before($(this));
+                    }
+                });
+            }
+        }
+    );
+
+    setTimeout(reload, 1000);
+};
+setTimeout(reload, 1000);
+
+});
 </script>
 {% endblock %}
