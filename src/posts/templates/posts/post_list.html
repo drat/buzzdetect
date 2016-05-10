@@ -38,9 +38,40 @@ blockquote.Tweet {
 
 <form method="GET" action="">
     <table>
-    {{ form.as_table }}
+        <tr>
+            <td>
+                Min Friends repost
+            </td>
+            <td>
+                {{ form.min_friends_reposts }}
+            </td>
+            <td>
+                On
+            </td>
+            <td>
+                {{ form.filter_on_stat }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Max age in minutes
+            </td>
+            <td colspan="3">
+                {{ form.max_age_in_minutes }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Order by
+            </td>
+            <td>
+                {{ form.order_by }}
+            </td>
+            <td colspan="2">
+                <input type="submit" value="Filter" />
+            </td>
+        </tr>
     </table>
-<input type="submit" value="Filter" />
 </form>
 
 <table>
