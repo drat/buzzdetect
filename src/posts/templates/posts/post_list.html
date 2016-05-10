@@ -100,7 +100,7 @@ blockquote.Tweet {
             </tr>
             <tr>
                 <td>
-                    {{ object.last_stat.added|seconds_since:object.added }}
+                    {{ object.last_stat.added|seconds_since:object.datetime }}
                     (current)
                 </td>
                 <td>
