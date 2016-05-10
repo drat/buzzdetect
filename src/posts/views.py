@@ -105,6 +105,13 @@ class PostList(generic.ListView):
                     '%s__friends_reposts' % stat: None,
                 })
 
+        posts = posts.prefetch_related(
+            Prefetch(
+                'stat_set',
+                queryset=Stat.objects.order_by('added'),
+            )
+        )
+
         q = posts.select_related(
             'poster',
             'last_stat',

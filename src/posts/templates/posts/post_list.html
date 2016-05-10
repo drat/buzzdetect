@@ -2,6 +2,7 @@
 
 {% load humanize %}
 {% load tz %}
+{% load posts_tags %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -48,7 +49,9 @@ blockquote.Tweet {
     <td>
         <table class="stat" id="tweet-stat-{{ object.pk }}" width="99%">
             <tr>
-                <td></td>
+                <th>
+                    Seconds
+                </th>
                 <th>
                     Reposts
                 </td>
@@ -65,29 +68,40 @@ blockquote.Tweet {
                     Repost per follower
                 </th>
             </tr>
+            {% for stat in object.stat_set.all|slice:':12' %}
             <tr>
                 <td>
-                    At 2 min.
+                    {{ stat.added|seconds_since:object.added }}
                 </td>
                 <td>
-                    {{ object.stat_after_two_minute.reposts }}
+                    {{ stat.reposts }}
                 </td>
                 <td>
-                    {{ object.stat_after_two_minute.friends_reposts }}
+                    {{ stat.friends_reposts }}
                 </td>
                 <td>
-                    {{ object.stat_after_two_minute.speed }}
+                    {{ stat.speed }}
                 </td>
                 <td>
-                    {{ object.stat_after_two_minute.acceleration }}
+                    {{ stat.acceleration }}
                 </td>
                 <td>
-                    {{ object.stat_after_two_minute.reposts_per_followers_count }}
+                    {{ stat.reposts_per_followers_count }}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if object.last_stat not in object.stat_set.all|slice:':12' %}
+            <tr>
+                <td colspan="6">
+                    <a href="{{ object.get_absolute_url }}">
+                        ...
+                    </a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Current
+                    {{ object.last_stat.added|seconds_since:object.added }}
+                    (current)
                 </td>
                 <td>
                     {{ object.last_stat.reposts }}
@@ -105,10 +119,8 @@ blockquote.Tweet {
                     {{ object.last_stat.reposts_per_followers_count }}
                 </td>
             </tr>
+            {% endif %}
         </table>
-        <a href="{{ object.get_absolute_url }}">
-            {{ object.upstream_id }}
-        </a>
     </td>
     <td>
         <blockquote class="body" data-tweet-id="{{ object.upstream_id }}">
@@ -120,6 +132,9 @@ blockquote.Tweet {
             {{ object.datetime|naturaltime }}
             -->
         </blockquote>
+        <a href="{{ object.get_absolute_url }}">
+            Tweet details
+        </a>
     </td>
 </tr>
 {% empty %}
