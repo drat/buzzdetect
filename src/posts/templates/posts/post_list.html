@@ -12,7 +12,6 @@
 {% block branding %}
 {% timezone "Europe/Paris" %}
 
-
 <h1>
 Tweets
 {% if 'anytime' not in request.GET %}
@@ -25,56 +24,60 @@ with at least {{ min_friends_retweets }} friends retweet
 {% endblock %}
 
 {% block content %}
+<style type="text/css">
+blockquote {
+    border-left: 0;
+    margin-left: 0;
+}
+
+blockquote.Tweet {
+    display: block;
+}
+</style>
+
 <form method="GET" action="">
 {{ form }}
 <input type="submit" value="Filter" />
 </form>
 
+<table>
 {% for object in object_list %}
-<div class="tweet" id="tweet-{{ object.pk }}">
-    <div class="source">
-        <a href="{{ object.poster.get_absolute_url }}">
-            {{ object.poster }}
-        </a>
-    </div>
-    <blockquote class="body" data-twitter-id="{{ object.upstream_id }}">
-        {{ object.content }}
-        {{ object.datetime|naturaltime }}
-    </blockquote>
-    <div class="link">
-        <a href="{{ object.get_absolute_url }}">
-            {{ object.upstream_id }}
-        </a>
-    </div>
-    <div class="stats">
-        <table>
+<tr class="tweet" id="tweet-{{ object.pk }}">
+    <td>
+        <table class="stat" id="tweet-stat-{{ object.pk }}" width="99%">
+            <tr>
+                <td></td>
+                <th>
+                    Reposts
+                </td>
+                <th>
+                    <abbr title="Reposts by Friends">FR</abbr>
+                </th>
+                <th>
+                    Speed
+                </th>
+                <th>
+                    Accel
+                </th>
+                <th>
+                    Repost per follower
+                </th>
+            </tr>
             <tr>
                 <td>
-                    Reposts
+                    At 2 min.
                 </td>
                 <td>
                     {{ object.stat_after_two_minute.reposts }}
                 </td>
                 <td>
-                    <abbr title="Reposts by Friends">FR</abbr>
-                </td>
-                <td>
                     {{ object.stat_after_two_minute.friends_reposts }}
-                </td>
-                <td>
-                    Speed
                 </td>
                 <td>
                     {{ object.stat_after_two_minute.speed }}
                 </td>
                 <td>
-                    Accel
-                </td>
-                <td>
                     {{ object.stat_after_two_minute.acceleration }}
-                </td>
-                <td>
-                    Repost per follower
                 </td>
                 <td>
                     {{ object.stat_after_two_minute.reposts_per_followers_count }}
@@ -82,42 +85,49 @@ with at least {{ min_friends_retweets }} friends retweet
             </tr>
             <tr>
                 <td>
-                    Reposts
+                    Current
                 </td>
                 <td>
                     {{ object.last_stat.reposts }}
                 </td>
                 <td>
-                    <abbr title="Reposts by Friends">FR</abbr>
-                </td>
-                <td>
                     {{ object.last_stat.friends_reposts }}
-                </td>
-                <td>
-                    Speed
                 </td>
                 <td>
                     {{ object.last_stat.speed }}
                 </td>
                 <td>
-                    Accel
-                </td>
-                <td>
                     {{ object.last_stat.acceleration }}
-                </td>
-                <td>
-                    Repost per follower
                 </td>
                 <td>
                     {{ object.last_stat.reposts_per_followers_count }}
                 </td>
             </tr>
         </table>
-    </div>
-</div>
+        <a href="{{ object.get_absolute_url }}">
+            {{ object.upstream_id }}
+        </a>
+    </td>
+    <td>
+        <blockquote class="body" data-tweet-id="{{ object.upstream_id }}">
+            <!--
+            <a href="{{ object.poster.get_absolute_url }}">
+                {{ object.poster }}
+            </a>
+            {{ object.content }}
+            {{ object.datetime|naturaltime }}
+            -->
+        </blockquote>
+    </td>
+</tr>
 {% empty %}
-<h1>No matching tweet found</h1>
+<tr>
+    <td>
+        No matching tweet found
+    </td>
+</tr>
 {% endfor %}
+<table>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script type="text/javascript">
@@ -129,7 +139,6 @@ function reload() {
         {
             success: function(data, textStatus, jqXHR) {
                 $(data).find('.tweet').each(function() {
-                    console.log($(this), $(this).index());
                     div = $('#' + $(this).attr('id'));
                     if (div.length) {
                         // tweet exists with same index: continue
@@ -137,15 +146,21 @@ function reload() {
                         if (div.index() != $(this).index()) {
                             $('.tweet').eq($(this).index()).before(div);
                         }
+
+                        // Update tweet stats
+                        div.find('.stat').replaceWith($(this).find('.stat'));
                     } else {
                         // tweet does not exist: add
                         $('.tweet').eq($(this).index()).before($(this));
                     }
                 });
+
+                $('.tweet').slice(15).remove();
             }
         }
     );
 
+    renderTweets();
     setTimeout(reload, 1000);
 };
 setTimeout(reload, 1000);

@@ -3,16 +3,15 @@
 {% block footer %}
 <script id="twitter-wjs" type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 <script type="text/javascript">
-    var elements = document.querySelectorAll('[data-tweet-id]');
-
-    for (i in elements) {
-        if (elements[i].attributes) {
-            var element = elements[i];
-            var tweetId = element.attributes['data-tweet-id'].value;
-            console.log(tweetId, element)
-            twttr.widgets.createTweet(tweetId, element);
-        }
-    }
+function renderTweets() {
+    $('blockquote.body[data-tweet-id]:not(.rendered)').each(function() {
+        console.log('rendering', $(this))
+        var tweetId = $(this).attr('data-tweet-id');
+        twttr.widgets.createTweet(tweetId, $(this).get(0));
+        $(this).addClass('rendered');
+    })
+}
+renderTweets();
 </script>
 {{ block.super }}
 {% endblock %}

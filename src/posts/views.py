@@ -105,7 +105,7 @@ class PostList(generic.ListView):
             'stat_after_two_minute',
         ).order_by(
             order_by
-        )[:30]
+        )[:15]
 
         return q
 
