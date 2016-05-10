@@ -99,6 +99,12 @@ class PostList(generic.ListView):
         else:
             order_by = '-%s__%s' % (stat, order_by)
 
+            # Ordering by friends reposts, exclude null
+            if order_by == 'friends_reposts':
+                posts = posts.exclude(**{
+                    '%s__friends_reposts' % stat: None,
+                })
+
         q = posts.select_related(
             'poster',
             'last_stat',
