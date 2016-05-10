@@ -16,7 +16,7 @@ class PostSearchForm(forms.Form):
             ('speed', 'Speed'),
             ('time', 'Time'),
         ),
-        initial='friends_reposts',
+        initial='time',
         required=False,
     )
 
