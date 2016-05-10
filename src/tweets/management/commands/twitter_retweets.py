@@ -33,8 +33,8 @@ class Command(BaseCommand):
 
         def get_older_tweets(min_minutes, max_minutes, stats_minutes):
             return all_tweets.filter(
-                datetime__lt=now - timedelta(minutes=min_minutes),
-                datetime__gte=now - timedelta(minutes=max_minutes),
+                added__lt=now - timedelta(minutes=min_minutes),
+                added__gte=now - timedelta(minutes=max_minutes),
             ).exclude(
                 id__in=Stat.objects.filter(
                     added__gte=now - timedelta(minutes=stats_minutes),
