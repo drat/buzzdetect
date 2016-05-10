@@ -8,13 +8,24 @@ import threading
 
 from posts.models import Post, Poster
 
+import time
+
 from tweets.utils import get_auth, get_data, get_twitter
 
 from twitter import TwitterStream
+from twitter.api import TwitterHTTPError
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        while True:
+            try:
+                self.follow_stream()
+            except TwitterHTTPError as e:
+                print e
+                time.sleep(10)
+
+    def follow_stream(self):
         twitter_userstream = TwitterStream(
             auth=get_auth(),
             domain='userstream.twitter.com'
