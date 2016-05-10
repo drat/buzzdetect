@@ -5,7 +5,6 @@
 <script type="text/javascript">
 function renderTweets() {
     $('blockquote.body[data-tweet-id]:not(.rendered)').each(function() {
-        console.log('rendering', $(this))
         var tweetId = $(this).attr('data-tweet-id');
         twttr.widgets.createTweet(tweetId, $(this).get(0));
         $(this).addClass('rendered');
