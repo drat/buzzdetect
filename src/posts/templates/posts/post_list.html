@@ -36,7 +36,9 @@ blockquote.Tweet {
 </style>
 
 <form method="GET" action="">
-{{ form }}
+    <table>
+    {{ form.as_table }}
+    </table>
 <input type="submit" value="Filter" />
 </form>
 
