@@ -6,8 +6,8 @@ from django.db import transaction
 from posts.models import Post, Poster, Stat
 
 
-class TestTrigger(test.TransactionTestCase):
-    def test_friends_repost(self):
+class TriggerTest(test.TransactionTestCase):
+    def setUp(self):
         self.friend = Poster(
             upstream_id=1,
             name='friend',
@@ -41,6 +41,11 @@ class TestTrigger(test.TransactionTestCase):
             reposts=3,
         )
         transaction.commit()
+        self.stat2 = Stat.objects.get(pk=stat2.pk)
 
-        stat2 = Stat.objects.get(pk=stat2.pk)
-        self.assertEqual(stat2.friends_reposts, 2)
+
+class FriendsRepostsTest(TriggerTest):
+    def test_friends_repost(self):
+        self.assertEqual(self.stat2.friends_reposts, 2)
+
+

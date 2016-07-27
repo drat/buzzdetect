@@ -1,77 +1,16 @@
 [
 {
     "fields": {
-        "datetime": "2016-03-12T14:13:20Z",
-        "name": "my super tweet",
-        "twitter_id": 3108351
+        "added": "2016-03-12T13:56:40Z",
+        "content": "my super tweet",
+        "datetime": "2016-03-12T13:56:40Z",
+        "last_stat": null,
+        "parent": null,
+        "poster": 1,
+        "stat_after_two_minute": null,
+        "upstream_id": 3108351
     },
-    "model": "tweets.tweet",
+    "model": "posts.post",
     "pk": 1
-},
-{
-    "fields": {
-        "acceleration": 0.0,
-        "datetime": "2016-03-12T14:14:20Z",
-        "retweet_count": 3,
-        "retweet_per_minute": 0.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 1
-},
-{
-    "fields": {
-        "acceleration": 0.0,
-        "datetime": "2016-03-12T14:15:20Z",
-        "retweet_count": 6,
-        "retweet_per_minute": 3.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 2
-},
-{
-    "fields": {
-        "acceleration": -3.0,
-        "datetime": "2016-03-12T14:16:20Z",
-        "retweet_count": 9,
-        "retweet_per_minute": 3.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 3
-},
-{
-    "fields": {
-        "acceleration": -3.0,
-        "datetime": "2016-03-12T14:17:20Z",
-        "retweet_count": 12,
-        "retweet_per_minute": 3.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 4
-},
-{
-    "fields": {
-        "acceleration": -3.0,
-        "datetime": "2016-03-12T14:18:20Z",
-        "retweet_count": 30,
-        "retweet_per_minute": 18.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 5
-},
-{
-    "fields": {
-        "acceleration": -18.0,
-        "datetime": "2016-03-12T14:19:20Z",
-        "retweet_count": 32,
-        "retweet_per_minute": 2.0,
-        "tweet": 1
-    },
-    "model": "tweets.retweets",
-    "pk": 6
 }
 ]

@@ -1,22 +1,30 @@
 [
 {
     "fields": {
+        "added": "2016-03-12T14:14:20Z",
+        "content": "original super tweet",
         "datetime": "2016-03-12T13:56:40Z",
-        "name": "original super tweet",
-        "twitter_id": 3108350
+        "last_stat": null,
+        "parent": null,
+        "poster": 1,
+        "stat_after_two_minute": null,
+        "upstream_id": 3108350
     },
-    "model": "tweets.tweet",
+    "model": "posts.post",
     "pk": 1
 },
 {
     "fields": {
-        "acceleration": 0.0,
-        "datetime": "2016-03-12T14:14:20Z",
-        "retweet_count": 4,
-        "retweet_per_minute": 0.0,
-        "tweet": 1
+        "added": "2016-03-12T14:14:20Z",
+        "content": "my super tweet",
+        "datetime": "2016-03-12T13:56:40Z",
+        "last_stat": null,
+        "parent": 1,
+        "poster": 2,
+        "stat_after_two_minute": null,
+        "upstream_id": 3108351
     },
-    "model": "tweets.retweets",
-    "pk": 1
+    "model": "posts.post",
+    "pk": 2
 }
 ]
