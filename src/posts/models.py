@@ -62,7 +62,7 @@ class Stat(models.Model):
 
 
 class PosterAverageStat(models.Model):
-    poster = models.ForeignKey('Poster')
+    poster = models.ForeignKey('Poster', related_name='average_set')
     # Number of posts used to calculate the average
     total_posts = models.PositiveIntegerField()
     # Sum of reposts for all posts used so far

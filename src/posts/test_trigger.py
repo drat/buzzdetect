@@ -75,7 +75,7 @@ class PosterAvegareStatTest(test.TransactionTestCase):
 
     def get_average_stat(self, poster, seconds):
         seconds = seconds or 120
-        return poster.posteraveragestat_set.filter(
+        return poster.average_set.filter(
             seconds=seconds
         ).first()
 
