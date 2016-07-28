@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import timezone
 
 
 class Post(models.Model):
@@ -50,7 +51,7 @@ class Poster(models.Model):
 
 class Stat(models.Model):
     post = models.ForeignKey('Post')
-    added = models.DateTimeField(auto_now_add=True)
+    added = models.DateTimeField(default=timezone.now)
     reposts = models.PositiveIntegerField()
 
     # Denormalized fields provisionned by trigger
@@ -60,13 +61,21 @@ class Stat(models.Model):
     friends_reposts = models.PositiveIntegerField(default=0, db_index=True)
 
 
-#class MedianStat(models.Model):
-#    poster = models.ForeignKey('Poster')
-#    reposts = models.PositiveIntegerField()
-#    # See Stat.time
-#    time = models.PositiveIntegerField(db_index=True)
-#
-#    class Meta:
-#        unique_together = (
-#            ('time', 'poster'),
-#        )
+class PosterAverageStat(models.Model):
+    poster = models.ForeignKey('Poster')
+    # Number of posts used to calculate the average
+    total_posts = models.PositiveIntegerField()
+    # Sum of reposts for all posts used so far
+    total_reposts = models.PositiveIntegerField()
+    # Flattened time in seconds, ie. 120 for stat_after_two_minute
+    seconds = models.PositiveIntegerField(db_index=True)
+    # total_reposts / total_posts
+    average = models.FloatField(db_index=True)
+
+    class Meta:
+        unique_together = (
+            (
+                'poster',
+                'seconds',
+            ),
+        )
