@@ -118,3 +118,8 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         self.add_stat(self.poster0, 120, 17)
         self.add_stat(self.poster0, 145, 15)  # noise
         self.assert_average_stat_is(self.poster0, 120, 3, 33, 11)
+
+        self.assertEquals(
+            Poster.objects.get(pk=self.poster0.pk).average_after_two_minute,
+            self.get_average_stat(self.poster0, 120)
+        )

@@ -42,6 +42,14 @@ class Poster(models.Model):
     followers_count = models.PositiveIntegerField()
     friend = models.BooleanField(default=False)
 
+    # Denormalized field handled by trigger
+    average_after_two_minute = models.ForeignKey(
+        'PosterAverageStat',
+        db_index=True,
+        null=True,
+        related_name='two_minute_for'
+    )
+
     def __unicode__(self):
         return u'@%s' % self.name
 
