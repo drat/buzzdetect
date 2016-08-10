@@ -14,7 +14,7 @@ AS $$
     DECLARE posteraveragestat posts_posteraveragestat%ROWTYPE;
     DECLARE new_posteraveragestat posts_posteraveragestat%ROWTYPE;
     BEGIN
-        RAISE LOG 'Hello % % %', NEW.reposts, NEW.post_id, NEW.added;
+        RAISE LOG '2 minute trigger % % %', NEW.reposts, NEW.post_id, NEW.added;
         -- Get the post's datetime, stat_after_two_minute and poster_id for
         -- this stat
         SELECT

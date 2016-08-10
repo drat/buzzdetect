@@ -74,7 +74,6 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         return self.counter
 
     def get_average_stat(self, poster, seconds):
-        seconds = seconds or 120
         return poster.average_set.filter(
             seconds=seconds
         ).first()
@@ -102,9 +101,21 @@ class PosterAvegareStatTest(test.TransactionTestCase):
             datetime=timezone.now(),
         )
 
-    def test_average_stat_after_120_seconds(self):
+    def test_average_stat(self):
+        # trigger debug incantation
+        # before = len(connection.connection.notices)
+        # for notice in connection.connection.notices[before:]:
+        #     print notice
+
         self.add_stat(self.poster0, 120, 10)
         self.assert_average_stat_is(self.poster0, 120, 1, 10, 10)
+
+        self.add_stat(self.poster0, 180, 10)
+        # Should not have been modified
+        self.assert_average_stat_is(self.poster0, 120, 1, 10, 10)
+
+        # Should have been added
+        self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
 
         stat = self.add_stat(self.poster0, 100, 3)  # noise, should be ignored
         stat = self.add_stat(self.poster0, 129, 6)
@@ -122,4 +133,9 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         self.assertEquals(
             Poster.objects.get(pk=self.poster0.pk).average_after_two_minute,
             self.get_average_stat(self.poster0, 120)
+        )
+
+        self.assertEquals(
+            Poster.objects.get(pk=self.poster0.pk).average_after_three_minute,
+            self.get_average_stat(self.poster0, 180)
         )

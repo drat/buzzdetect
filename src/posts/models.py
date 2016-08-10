@@ -28,6 +28,12 @@ class Post(models.Model):
         null=True,
         related_name='two_minute_for'
     )
+    stat_after_three_minute = models.ForeignKey(
+        'Stat',
+        db_index=True,
+        null=True,
+        related_name='three_minute_for'
+    )
 
     def __unicode__(self):
         return u'#%s %s' % (self.id, self.content)
@@ -48,6 +54,12 @@ class Poster(models.Model):
         db_index=True,
         null=True,
         related_name='two_minute_for'
+    )
+    average_after_three_minute = models.ForeignKey(
+        'PosterAverageStat',
+        db_index=True,
+        null=True,
+        related_name='three_minute_for'
     )
 
     def __unicode__(self):
