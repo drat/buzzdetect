@@ -120,16 +120,30 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         stat = self.add_stat(self.poster0, 100, 3)  # noise, should be ignored
         stat = self.add_stat(self.poster0, 129, 6)
         stat = self.add_stat(self.poster0, 140, 15)  # noise
+        # Should have updated
         self.assert_average_stat_is(self.poster0, 120, 2, 16, 8)
+        # Should have not been updated
+        self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
 
         # test that noise doesn't affect result for poster0
         self.add_stat(self.poster1, 120, 4)
+        # Should not have been updated after adding a stat for poster1
         self.assert_average_stat_is(self.poster0, 120, 2, 16, 8)
+        self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
 
         self.add_stat(self.poster0, 120, 17)
         self.add_stat(self.poster0, 145, 15)  # noise
+        # Should have been updated
         self.assert_average_stat_is(self.poster0, 120, 3, 33, 11)
+        # Should have not been updated
+        self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
 
+        self.add_stat(self.poster0, 180, 2)
+        self.add_stat(self.poster0, 199, 15)  # noise
+        # Should have been updated
+        self.assert_average_stat_is(self.poster0, 180, 2, 12, 6)
+
+        # Test denormalized average_after column
         self.assertEquals(
             Poster.objects.get(pk=self.poster0.pk).average_after_two_minute,
             self.get_average_stat(self.poster0, 120)
