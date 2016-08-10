@@ -10,12 +10,16 @@ CREATE OR REPLACE FUNCTION update_poster_average_after_two_minute()
 RETURNS trigger
 AS $$
     BEGIN
-        UPDATE
-            posts_poster
-        SET
-            average_after_two_minute_id = NEW.id
-        WHERE
-            posts_poster.id = NEW.poster_id;
+        IF
+            NEW.seconds = 120
+        THEN
+            UPDATE
+                posts_poster
+            SET
+                average_after_two_minute_id = NEW.id
+            WHERE
+                posts_poster.id = NEW.poster_id;
+        END IF;
         RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
