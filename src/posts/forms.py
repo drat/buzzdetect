@@ -31,3 +31,7 @@ class PostSearchForm(forms.Form):
 
     max_age_in_minutes = forms.IntegerField(required=False, initial=30)
     min_friends_reposts = forms.IntegerField(required=False, initial=2)
+    min_average_compare_after_three_minute = forms.IntegerField(
+        required=False,
+        initial=2
+    )

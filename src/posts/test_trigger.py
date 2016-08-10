@@ -82,10 +82,12 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         if isinstance(post, Poster):
             post = self.add_post(post)
 
-        return post.stat_set.create(
+        stat = post.stat_set.create(
             reposts=reposts,
             added=post.datetime + timedelta(seconds=seconds)
         )
+        stat.post.refresh_from_db()
+        return stat
 
     def assert_average_stat_is(self, poster, seconds, posts, reposts, average):
         stat = self.get_average_stat(poster, seconds)
@@ -107,41 +109,48 @@ class PosterAvegareStatTest(test.TransactionTestCase):
         # for notice in connection.connection.notices[before:]:
         #     print notice
 
-        self.add_stat(self.poster0, 120, 10)
+        stat0 = self.add_stat(self.poster0, 120, 10)
         self.assert_average_stat_is(self.poster0, 120, 1, 10, 10)
+        self.assertEqual(stat0.post.average_compare_after_three_minute, None)
 
-        self.add_stat(self.poster0, 180, 10)
+        stat1 = self.add_stat(self.poster0, 180, 10)
         # Should not have been modified
         self.assert_average_stat_is(self.poster0, 120, 1, 10, 10)
 
         # Should have been added
         self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
+        self.assertEqual(stat1.post.average_compare_after_three_minute, 1)
 
-        stat = self.add_stat(self.poster0, 100, 3)  # noise, should be ignored
-        stat = self.add_stat(self.poster0, 129, 6)
-        stat = self.add_stat(self.poster0, 140, 15)  # noise
+        self.add_stat(self.poster0, 100, 3)  # noise, should be ignored
+        stat2 = self.add_stat(self.poster0, 129, 6)
+        self.add_stat(self.poster0, 140, 15)  # noise
         # Should have updated
         self.assert_average_stat_is(self.poster0, 120, 2, 16, 8)
         # Should have not been updated
         self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
+        self.assertEqual(stat0.post.average_compare_after_three_minute, None)
+        self.assertEqual(stat1.post.average_compare_after_three_minute, 1)
+        self.assertEqual(stat2.post.average_compare_after_three_minute, None)
 
         # test that noise doesn't affect result for poster0
-        self.add_stat(self.poster1, 120, 4)
+        stat3 = self.add_stat(self.poster1, 120, 4)
         # Should not have been updated after adding a stat for poster1
         self.assert_average_stat_is(self.poster0, 120, 2, 16, 8)
         self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
+        self.assertEqual(stat3.post.average_compare_after_three_minute, None)
 
-        self.add_stat(self.poster0, 120, 17)
+        stat4 = self.add_stat(self.poster0, 120, 17)
         self.add_stat(self.poster0, 145, 15)  # noise
         # Should have been updated
         self.assert_average_stat_is(self.poster0, 120, 3, 33, 11)
         # Should have not been updated
         self.assert_average_stat_is(self.poster0, 180, 1, 10, 10)
 
-        self.add_stat(self.poster0, 180, 2)
+        stat5 = self.add_stat(self.poster0, 180, 2)
         self.add_stat(self.poster0, 199, 15)  # noise
         # Should have been updated
         self.assert_average_stat_is(self.poster0, 180, 2, 12, 6)
+        self.assertEqual(int(stat5.post.average_compare_after_three_minute * 100), 33)
 
         # Test denormalized average_after column
         self.assertEquals(

@@ -10,20 +10,6 @@
 </div>
 {% endblock %}
 
-{% block branding %}
-{% timezone "Europe/Paris" %}
-
-<h1>
-Tweets
-{% if 'anytime' not in request.GET %}
-since {{ min_datetime }}
-{% endif %}
-with at least {{ min_friends_retweets }} friends retweet
-</h1>
-
-{% endtimezone %}
-{% endblock %}
-
 {% block content %}
 <style type="text/css">
 blockquote {
@@ -69,6 +55,14 @@ blockquote.Tweet {
             </td>
             <td colspan="2">
                 <input type="submit" value="Filter" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Min repost ratio at 3 minutes
+            </td>
+            <td colspan="3">
+                {{ form.min_average_compare_after_three_minute }}
             </td>
         </tr>
     </table>

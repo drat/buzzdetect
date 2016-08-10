@@ -74,8 +74,19 @@ class PostList(generic.ListView):
         filter_on_stat = self.request.GET.get('filter_on_stat', 'current')
         max_age_in_minutes = int(self.request.GET.get('max_age_in_minutes', '30'))
         min_friends_reposts = int(self.request.GET.get('min_friends_reposts', '2'))
+        min_average_compare_after_three_minute = int(
+            self.request.GET.get(
+                'min_average_compare_after_three_minute',
+                '2'
+            )
+        )
 
         posts = Post.objects.all()
+
+        if min_average_compare_after_three_minute:
+            posts = posts.filter(
+                average_compare_after_three_minute=min_average_compare_after_three_minute
+            )
 
         if max_age_in_minutes:
             posts = posts.filter(

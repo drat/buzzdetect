@@ -35,6 +35,9 @@ class Post(models.Model):
         related_name='three_minute_for'
     )
 
+    # Denormalized field handled by trigger
+    average_compare_after_three_minute = models.FloatField(null=True)
+
     def __unicode__(self):
         return u'#%s %s' % (self.id, self.content)
 
