@@ -16,7 +16,7 @@ class Post(models.Model):
         blank=True
     )
     datetime = models.DateTimeField(db_index=True)
-    added = models.DateTimeField(auto_now_add=True)
+    added = models.DateTimeField(auto_now_add=True, db_index=True)
     poster = models.ForeignKey('Poster')
     content = models.TextField()
 
@@ -42,7 +42,10 @@ class Post(models.Model):
     )
 
     # Denormalized field handled by trigger
-    average_compare_after_three_minute = models.FloatField(null=True)
+    average_compare_after_three_minute = models.FloatField(
+        null=True,
+        db_index=True
+    )
 
     def __unicode__(self):
         return u'#%s %s' % (self.id, self.content)
@@ -84,8 +87,8 @@ class Poster(models.Model):
 
 class Stat(models.Model):
     post = models.ForeignKey('Post')
-    added = models.DateTimeField(default=timezone.now)
-    reposts = models.PositiveIntegerField()
+    added = models.DateTimeField(default=timezone.now, db_index=True)
+    reposts = models.PositiveIntegerField(db_index=True)
 
     # Denormalized fields provisionned by trigger
     speed = models.FloatField(null=True, db_index=True)
