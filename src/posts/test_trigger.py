@@ -130,6 +130,27 @@ class PosterAvegareStatTest(test.TransactionTestCase):
             object_id=self.account.pk,
         )
 
+    def test_zero_reposts_at_two_minute(self):
+        ''' Regression test against a division by zero '''
+        poster = Poster.objects.create(
+            upstream_id=self.get_int(),
+            name='poster0',
+            followers_count=0,
+            friend=True,
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
+        )
+
+        stat0 = self.add_stat(poster, 120, 0)
+        stat1 = self.add_stat(poster, 120, 0)
+        self.assert_average_stat_is(poster, 120, 2, 0, 0)
+
+        stat2 = self.add_stat(poster, 180, 0)
+        stat3 = self.add_stat(poster, 180, 0)
+        self.assert_average_stat_is(poster, 180, 2, 0, 0)
+        self.assertEqual(stat2.post.average_compare_after_three_minute, 0)
+        self.assertEqual(stat3.post.average_compare_after_three_minute, 0)
+
     def test_average_stat(self):
         # trigger debug incantation
         # before = len(connection.connection.notices)
