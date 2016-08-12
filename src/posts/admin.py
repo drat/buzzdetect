@@ -6,8 +6,7 @@ from .models import Post, Poster, PosterAverageStat, Stat
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'poster',
-        'stat_after_two_minute',
-        'stat_after_three_minute',
+        'average_compare_after_three_minute',
         'content',
         'datetime',
     )
