@@ -85,7 +85,7 @@ class PostList(generic.ListView):
 
         if min_average_compare_after_three_minute:
             posts = posts.filter(
-                average_compare_after_three_minute=min_average_compare_after_three_minute
+                average_compare_after_three_minute__gte=min_average_compare_after_three_minute
             )
 
         if max_age_in_minutes:
