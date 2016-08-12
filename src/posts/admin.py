@@ -9,9 +9,6 @@ class PostAdmin(admin.ModelAdmin):
         'content',
         'datetime',
     )
-    list_filter = (
-        'poster',
-    )
     search_fields = (
         'upstream_id',
     )
