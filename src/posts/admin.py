@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Post, Poster, Stat
+from .models import Post, Poster, PosterAverageStat, Stat
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -36,3 +36,17 @@ class StatAdmin(admin.ModelAdmin):
         'reposts_per_followers_count',
     )
 admin.site.register(Stat, StatAdmin)
+
+
+class PosterAverageStatAdmin(admin.ModelAdmin):
+    list_display = (
+        'total_posts',
+        'total_reposts',
+        'seconds',
+        'average',
+    )
+
+    list_filter = (
+        'seconds',
+    )
+admin.site.register(PosterAverageStat, PosterAverageStatAdmin)
