@@ -2,27 +2,39 @@ from datetime import datetime, timedelta
 import random
 
 from django import test
+from django.contrib.contenttypes.models import ContentType
 from django.db import connection, transaction
 from django.utils import timezone
 
 from posts.models import Post, Poster, Stat
+from tweets.models import TwitterAccount
 
 
 class TriggerTest(test.TransactionTestCase):
     def setUp(self):
-        self.friend = Poster(
+        self.account = TwitterAccount.objects.create(
+            consumer_key='aoeu',
+            consumer_secret='aoeu',
+            token='aoeu',
+            secret='aoeu',
+        )
+
+        self.friend = Poster.objects.create(
             upstream_id=1,
             name='friend',
             followers_count=0,
             friend=True,
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
-        self.friend.save()
 
         self.post = Post.objects.create(
             upstream_id=1,
             poster=self.friend,
             content='',
             datetime=datetime.now(),
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
         stat = Stat.objects.create(
@@ -36,6 +48,8 @@ class TriggerTest(test.TransactionTestCase):
             poster=self.friend,
             content='',
             datetime=datetime.now(),
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
         stat2 = Stat.objects.create(
@@ -55,11 +69,20 @@ class PosterAvegareStatTest(test.TransactionTestCase):
     def setUp(self):
         self.counter = random.randint(123321, 21312343)
 
+        self.account = TwitterAccount.objects.create(
+            consumer_key='aoeu',
+            consumer_secret='aoeu',
+            token='aoeu',
+            secret='aoeu',
+        )
+
         self.poster0 = Poster.objects.create(
             upstream_id=self.get_int(),
             name='poster0',
             followers_count=0,
             friend=True,
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
         self.poster1 = Poster.objects.create(
@@ -67,6 +90,8 @@ class PosterAvegareStatTest(test.TransactionTestCase):
             name='poster1',
             followers_count=0,
             friend=True,
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
     def get_int(self):
@@ -101,6 +126,8 @@ class PosterAvegareStatTest(test.TransactionTestCase):
             upstream_id=self.get_int(),
             content=self.id(),
             datetime=timezone.now(),
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
     def test_average_stat(self):

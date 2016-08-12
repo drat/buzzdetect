@@ -140,6 +140,8 @@ class TwitterStreamThread(threading.Thread):
         obj, created = Poster.objects.update_or_create(
             upstream_id=data['id'],
             defaults=defaults,
+            content_type=ContentType.objects.get_for_model(self.account),
+            object_id=self.account.pk,
         )
 
         return obj

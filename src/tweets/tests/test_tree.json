@@ -2,9 +2,12 @@
 {
     "fields": {
         "added": "2016-03-12T14:14:20Z",
+        "average_compare_after_three_minute": null,
         "content": "original super tweet",
+        "content_type": 7,
         "datetime": "2016-03-12T13:56:40Z",
         "last_stat": null,
+        "object_id": 1,
         "parent": null,
         "poster": 1,
         "stat_after_three_minute": null,
@@ -17,9 +20,12 @@
 {
     "fields": {
         "added": "2016-03-12T14:14:20Z",
+        "average_compare_after_three_minute": null,
         "content": "my super tweet",
+        "content_type": 7,
         "datetime": "2016-03-12T13:56:40Z",
         "last_stat": null,
+        "object_id": 1,
         "parent": 1,
         "poster": 2,
         "stat_after_three_minute": null,

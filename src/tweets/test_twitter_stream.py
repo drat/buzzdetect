@@ -10,7 +10,10 @@ import pytz
 
 from posts.models import Stat, Post
 
-from .management.commands.twitter_stream import Command as TwitterStream
+from .models import TwitterAccount
+from .management.commands.twitter_stream import (
+    TwitterStreamThread as TwitterStream
+)
 
 
 class TestTwitterStream(test.TransactionTestCase):
@@ -29,7 +32,15 @@ class TestTwitterStream(test.TransactionTestCase):
                 u'followers_count': 3,
             },
         }
-        self.TwitterStream = TwitterStream()
+
+        self.account = TwitterAccount.objects.create(
+            consumer_key='aoeu',
+            consumer_secret='aoeu',
+            token='aoeu',
+            secret='aoeu',
+        )
+
+        self.TwitterStream = TwitterStream(self.account)
 
     def test_tree(self):
         self.data['retweeted_status'] = {

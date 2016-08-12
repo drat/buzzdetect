@@ -57,6 +57,10 @@ class Poster(models.Model):
     followers_count = models.PositiveIntegerField()
     friend = models.BooleanField(default=False)
 
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    source = GenericForeignKey('content_type', 'object_id')
+
     # Denormalized field handled by trigger
     average_after_two_minute = models.ForeignKey(
         'PosterAverageStat',
