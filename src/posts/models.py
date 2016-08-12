@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -17,6 +19,10 @@ class Post(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     poster = models.ForeignKey('Poster')
     content = models.TextField()
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    source = GenericForeignKey('content_type', 'object_id')
 
     # Denormalized field handled by trigger
     last_stat = models.ForeignKey('Stat', null=True, related_name='last_of')

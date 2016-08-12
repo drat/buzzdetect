@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 
 from posts.models import Post, Poster, Stat
-from tweets.utils import get_twitter
+from tweets.models import TwitterAccount
 
 import pytz
 
@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def monitor():
-        twitter = get_twitter()
+        twitter = TwitterAccount.objects.first().get_twitter()
 
         now = datetime.now(tz=pytz.utc)
 
