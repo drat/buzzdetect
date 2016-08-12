@@ -15,7 +15,7 @@ class Post(models.Model):
         null=True,
         blank=True
     )
-    datetime = models.DateTimeField()
+    datetime = models.DateTimeField(db_index=True)
     added = models.DateTimeField(auto_now_add=True)
     poster = models.ForeignKey('Poster')
     content = models.TextField()
