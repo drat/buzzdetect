@@ -3,6 +3,7 @@ import sys
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.conf import settings
 
@@ -74,25 +75,26 @@ class TwitterStreamThread(threading.Thread):
 
     def follow_stream(self):
         for msg in self.userstream.user():
-            print 'Got msg', msg
+            with transaction.atomic():
+                print 'Got msg', msg
 
-            if 'friends' in msg:
-                self.save_friends(msg['friends'])
-                continue
+                if 'friends' in msg:
+                    self.save_friends(msg['friends'])
+                    continue
 
-            if 'delete' in msg and 'status' in msg['delete']:
-                Post.objects.filter(
-                    upstream_id=msg['delete']['status']['id']
-                ).delete()
-                print 'Deleted', msg
-                continue
+                if 'delete' in msg and 'status' in msg['delete']:
+                    Post.objects.filter(
+                        upstream_id=msg['delete']['status']['id']
+                    ).delete()
+                    print 'Deleted', msg
+                    continue
 
-            if 'id' not in msg:
-                print 'Skipping because it has no id'
-                continue
+                if 'id' not in msg:
+                    print 'Skipping because it has no id'
+                    continue
 
-            tweet = self.tweet_get_or_create(msg)
-            print u'Saved tweet %s' % slugify(tweet)
+                tweet = self.tweet_get_or_create(msg)
+                print u'Saved tweet %s' % slugify(tweet)
 
     def save_friends(self, ids):
         for l in [ids[i:i+100] for i in xrange(0, len(ids), 100)]:

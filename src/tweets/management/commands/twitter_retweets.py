@@ -3,6 +3,7 @@ import threading
 from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.template.defaultfilters import slugify
 
 from posts.models import Post, Poster, Stat
@@ -16,7 +17,7 @@ class Command(BaseCommand):
         self.monitor()
 
     @staticmethod
-    def monitor():
+    def insert_retweets():
         twitter = TwitterAccount.objects.first().get_twitter()
 
         now = datetime.now(tz=pytz.utc)
@@ -79,6 +80,11 @@ class Command(BaseCommand):
                 )
 
             print 'Done !'
+
+    @staticmethod
+    def monitor():
+        with transaction.atomic():
+            Command.insert_retweets()
 
         # We can call this API 60 times per 15-minutes window that's every 15
         # seconds. Let's use every 20 seconds for now.
