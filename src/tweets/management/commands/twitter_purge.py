@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand
+from django.db import connection
 
 from posts.models import Post, Poster
 
@@ -29,3 +30,10 @@ class Command(BaseCommand):
 
             if posts.count():
                 posts.delete()
+
+            cursor = connection.cursor()
+
+            tables = ('posts_stat', 'posts_post', 'posts_posteraveragestat')
+            for table in tables:
+                print 'Vacuum analyze of %s' % table
+                cursor.execute('vacuum analyze %s' % table)
