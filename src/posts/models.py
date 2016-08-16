@@ -28,12 +28,6 @@ class Post(models.Model):
     last_stat = models.ForeignKey('Stat', null=True, related_name='last_of')
 
     # Denormalized field handled by trigger
-    stat_after_two_minute = models.ForeignKey(
-        'Stat',
-        db_index=True,
-        null=True,
-        related_name='two_minute_for'
-    )
     stat_after_three_minute = models.ForeignKey(
         'Stat',
         db_index=True,
@@ -65,12 +59,6 @@ class Poster(models.Model):
     source = GenericForeignKey('content_type', 'object_id')
 
     # Denormalized field handled by trigger
-    average_after_two_minute = models.ForeignKey(
-        'PosterAverageStat',
-        db_index=True,
-        null=True,
-        related_name='two_minute_for'
-    )
     average_after_three_minute = models.ForeignKey(
         'PosterAverageStat',
         db_index=True,
