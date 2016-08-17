@@ -66,3 +66,12 @@ class StatTest(PostsTestMixin, test.TransactionTestCase):
 
         stat_post2 = self.add_stat(post2, 2, 6)
         self.assertEqual(stat_post2.friends_reposts, 0)
+
+    def test_reposts_per_followers_count(self):
+        post0 = self.create_post(poster=self.create_poster(followers_count=10))
+        stat1 = self.add_stat(post0, 1, 8)
+        self.assertEquals(stat1.reposts_per_followers_count, 0.8)
+        stat2 = self.add_stat(post0, 2, 10)
+        self.assertEquals(stat2.reposts_per_followers_count, 1)
+        stat3 = self.add_stat(post0, 3, 15)
+        self.assertEquals(stat3.reposts_per_followers_count, 1.5)

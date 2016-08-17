@@ -208,7 +208,7 @@ class StatManager(models.Manager):
             post=post,
             reposts=reposts,
             reposts_per_followers_count=(
-                reposts / (post.poster.followers_count or 1)
+                float(reposts) / (post.poster.followers_count or 1)
             ),
             minute=post.minutes_since(now),
             friends_reposts=Post.objects.filter(
