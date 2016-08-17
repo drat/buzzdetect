@@ -23,45 +23,10 @@ blockquote.Tweet {
 
 <form method="GET" action="">
     <table>
+        {{ form.as_table }}
         <tr>
-            <td>
-                Min Friends repost
-            </td>
-            <td>
-                {{ form.min_friends_reposts }}
-            </td>
-            <td>
-                On
-            </td>
-            <td>
-                {{ form.filter_on_stat }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Max age in minutes
-            </td>
-            <td colspan="3">
-                {{ form.max_age_in_minutes }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Order by
-            </td>
-            <td>
-                {{ form.order_by }}
-            </td>
             <td colspan="2">
                 <input type="submit" value="Filter" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Min repost ratio at 3 minutes
-            </td>
-            <td colspan="3">
-                {{ form.min_average_compare_after_three_minute }}
             </td>
         </tr>
     </table>
@@ -91,9 +56,6 @@ blockquote.Tweet {
                 <th>
                     Repost per follower
                 </th>
-                <th>
-                    Average compare
-                </th>
             </tr>
             {% for stat in object.stat_set.all %}
             <tr>
@@ -114,9 +76,6 @@ blockquote.Tweet {
                 </td>
                 <td>
                     {{ stat.reposts_per_followers_count }}
-                </td>
-                <td>
-                    {{ stat.average_compare }}
                 </td>
             </tr>
             {% endfor %}
