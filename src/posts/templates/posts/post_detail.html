@@ -2,7 +2,6 @@
 
 {% load humanize %}
 {% load tz %}
-{% load posts_tags %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -58,7 +57,7 @@ originnaly by
     </tr>
 {% for stat in object.stat_set.all %}
     <tr>
-        <td>{{ stat.added|seconds_since:object.datetime }}</td>
+        <td>{{ stat.minute }}</td>
         <td>{{ stat.reposts }}</td>
         <td>{{ stat.speed }}</td>
         <td>{{ stat.acceleration }}</td>
