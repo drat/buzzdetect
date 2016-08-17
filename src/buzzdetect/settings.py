@@ -44,6 +44,15 @@ INSTALLED_APPS = [
 ]
 
 try:
+    import raven
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS.append('raven.contrib.django.raven_compat')
+
+RAVEN_CONFIG = {'dsn': os.environ.get('RAVEN_DSN', None)}
+
+try:
     import debug_toolbar
 except ImportError:
     pass
