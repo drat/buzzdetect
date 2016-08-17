@@ -69,13 +69,13 @@ blockquote.Tweet {
 </form>
 
 <table>
-{% for object in object_list %}
+{% for object in posts %}
 <tr class="tweet" id="tweet-{{ object.pk }}">
     <td>
         <table class="stat" id="tweet-stat-{{ object.pk }}" width="99%">
             <tr>
                 <th>
-                    Seconds
+                    Minute
                 </th>
                 <th>
                     Reposts
@@ -92,11 +92,14 @@ blockquote.Tweet {
                 <th>
                     Repost per follower
                 </th>
+                <th>
+                    Average compare
+                </th>
             </tr>
-            {% for stat in object.stat_set.all|slice:':12' %}
+            {% for stat in object.stat_set.all %}
             <tr>
                 <td>
-                    {{ stat.added|seconds_since:object.added }}
+                    {{ stat.minute }}
                 </td>
                 <td>
                     {{ stat.reposts }}
@@ -113,38 +116,11 @@ blockquote.Tweet {
                 <td>
                     {{ stat.reposts_per_followers_count }}
                 </td>
+                <td>
+                    {{ stat.average_compare }}
+                </td>
             </tr>
             {% endfor %}
-            {% if object.last_stat not in object.stat_set.all|slice:':12' %}
-            <tr>
-                <td colspan="6">
-                    <a href="{{ object.get_absolute_url }}">
-                        ...
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ object.last_stat.added|seconds_since:object.datetime }}
-                    (current)
-                </td>
-                <td>
-                    {{ object.last_stat.reposts }}
-                </td>
-                <td>
-                    {{ object.last_stat.friends_reposts }}
-                </td>
-                <td>
-                    {{ object.last_stat.speed }}
-                </td>
-                <td>
-                    {{ object.last_stat.acceleration }}
-                </td>
-                <td>
-                    {{ object.last_stat.reposts_per_followers_count }}
-                </td>
-            </tr>
-            {% endif %}
         </table>
     </td>
     <td>

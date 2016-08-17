@@ -6,15 +6,15 @@ from .models import Post
 class PostSearchForm(forms.Form):
     order_by = forms.ChoiceField(
         choices=(
-            ('friends_reposts', 'Friend reposts'),
-            ('reposts', 'Total reposts'),
+            ('s.friends_reposts DESC', 'Friend reposts'),
+            ('s.reposts DESC', 'Total reposts'),
             (
-                'reposts_per_followers_count',
+                's.reposts_per_followers_count DESC',
                 'Proportional reposts per follower count'
             ),
-            ('acceleration', 'Acceleration'),
-            ('speed', 'Speed'),
-            ('time', 'Time'),
+            ('s.acceleration DESC', 'Acceleration'),
+            ('s.speed DESC', 'Speed'),
+            ('p.datetime DESC', 'Time'),
         ),
         initial='time',
         required=False,
@@ -22,16 +22,20 @@ class PostSearchForm(forms.Form):
 
     filter_on_stat = forms.ChoiceField(
         choices=(
-            ('current', 'current'),
-            ('2 minutes', '2 minutes after creation'),
+            ('last', 'last stat'),
+            ('1', '1 minute'),
+            ('2', '2 minute'),
+            ('3', '3 minute'),
+            ('4', '4 minute'),
+            ('5', '5 minute'),
         ),
-        initial='current',
+        initial='last',
         required=False,
     )
 
     max_age_in_minutes = forms.IntegerField(required=False, initial=30)
     min_friends_reposts = forms.IntegerField(required=False, initial=2)
-    min_average_compare_after_three_minute = forms.FloatField(
+    min_average_compare = forms.FloatField(
         required=False,
-        initial=2
+        initial=1.5
     )

@@ -6,7 +6,6 @@ from .models import Post, Poster, PosterAverageStat, Stat
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'poster',
-        'average_compare_after_three_minute',
         'content',
         'datetime',
     )
@@ -43,11 +42,11 @@ class PosterAverageStatAdmin(admin.ModelAdmin):
     list_display = (
         'total_posts',
         'total_reposts',
-        'seconds',
+        'minute',
         'average',
     )
 
     list_filter = (
-        'seconds',
+        'minute',
     )
 admin.site.register(PosterAverageStat, PosterAverageStatAdmin)

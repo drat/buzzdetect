@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 
-
 TRIGGER = '''
-DROP FUNCTION IF EXISTS update_stat_after_two_minutes;
 DROP TRIGGER IF EXISTS update_stat_after_two_minutes ON post_stat;
+DROP FUNCTION IF EXISTS update_stat_after_two_minutes() CASCADE;
 '''
 
 
