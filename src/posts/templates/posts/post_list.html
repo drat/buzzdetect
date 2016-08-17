@@ -21,6 +21,7 @@ blockquote.Tweet {
 }
 </style>
 
+<div style="min-height:2000px">
 <form method="GET" action="">
     <table>
         {{ form.as_table }}
@@ -58,7 +59,7 @@ blockquote.Tweet {
                 </th>
             </tr>
             {% for stat in object.stat_set.all %}
-            <tr>
+            <tr data-minute="{{ stat.minute }}">
                 <td>
                     {{ stat.minute }}
                 </td>
@@ -104,6 +105,7 @@ blockquote.Tweet {
 </tr>
 {% endfor %}
 <table>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script type="text/javascript">
@@ -124,7 +126,11 @@ function reload() {
                         }
 
                         // Update tweet stats
-                        div.find('.stat').replaceWith($(this).find('.stat'));
+                        $(this).find('.stat tr[data-minute]').each(function() {
+                            if (! div.find('.stat tr[data-minute='+ $(this).attr('data-minute')+']').length) {
+                                $(this).insertAfter(div.find('.stat tr:first'));
+                            }
+                        });
                     } else {
                         // tweet does not exist: add
                         $('.tweet').eq($(this).index()).before($(this));
