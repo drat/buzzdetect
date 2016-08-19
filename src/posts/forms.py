@@ -6,6 +6,7 @@ from .models import Post
 class PostSearchForm(forms.Form):
     order_by = forms.ChoiceField(
         choices=(
+            ('s.average_compare DESC', 'Average compare'),
             ('s.friends_reposts DESC', 'Friend reposts'),
             ('s.reposts DESC', 'Total reposts'),
             (
