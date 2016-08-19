@@ -78,7 +78,7 @@ class PostList(generic.TemplateView):
             min_average_compare=float(self.request.GET.get('min_average_compare', 1)),
             order_by=self.request.GET.get('order_by', None),
             min_average_posts=self.request.GET.get('min_average_posts', 10),
-            min_average_reposts=self.request.GET.get('min_average_reposts', 7),
+            min_reposts=self.request.GET.get('min_reposts', 7),
         )
         ids = [r['id'] for r in c['results']]
 
