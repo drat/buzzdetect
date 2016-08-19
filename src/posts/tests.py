@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from tweets.models import TwitterAccount
 
-from .models import Post, Poster, PosterAverageStat, Stat
+from .models import Hub, Post, Poster, PosterAverageStat, Stat
 
 
 class PostsTestMixin(object):
@@ -15,16 +15,26 @@ class PostsTestMixin(object):
 
     def setUp(self):
         self.upstream_id = 1
-        self.account = TwitterAccount.objects.create(
+        self.hub0, c = Hub.objects.get_or_create(name='hub0')
+        self.hub1, c = Hub.objects.get_or_create(name='hub1')
+        self.account0, c = TwitterAccount.objects.get_or_create(
             consumer_key='aoeu',
             consumer_secret='aoeu',
             token='aoeu',
             secret='aoeu',
+            hub=self.hub0,
+        )
+        self.account1, c = TwitterAccount.objects.get_or_create(
+            consumer_key='aoeu',
+            consumer_secret='aoeu',
+            token='aoeu',
+            secret='aoeu',
+            hub=self.hub1,
         )
         self.friend = self.create_poster(friend=True)
 
     def create_post(self, minute=None, second=None, poster=None,
-            parent=None):
+            parent=None, account=None):
 
         self.upstream_id += 1
 
@@ -34,20 +44,19 @@ class PostsTestMixin(object):
             content='',
             parent=parent,
             datetime=self.get_datetime(minute or 30, second or 0),
-            content_type=ContentType.objects.get_for_model(self.account),
-            object_id=self.account.pk,
+            account=account or self.account0.account_ptr
         )
 
     def create_poster(self, friend=False, followers_count=None):
         self.upstream_id += 1
-        return Poster.objects.create(
+        poster = Poster.objects.create(
             upstream_id=self.upstream_id,
             name='friend',
             followers_count=followers_count or 10,
             friend=friend,
-            content_type=ContentType.objects.get_for_model(self.account),
-            object_id=self.account.pk,
         )
+        poster.accounts.add(self.account0.account_ptr)
+        return poster
 
     def add_stat(self, post, minute, reposts):
         stat = Stat.objects.add_for_post(

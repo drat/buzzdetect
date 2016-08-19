@@ -47,10 +47,11 @@ class PostManager(models.Manager):
 
     def filter_list(self, filter_on_stat=None, max_age_in_minutes=None,
             min_friends_reposts=None, min_average_compare=None, now=None,
-            order_by=None):
+            order_by=None, hub=None):
         sql = '''
 SELECT
     p.*,
+    a.name as account_name,
     s.reposts,
     s.minute,
     s.speed,
@@ -66,6 +67,8 @@ SELECT
     po.followers_count as poster_follower_count
 FROM
     posts_post AS p
+LEFT JOIN
+    posts_account AS a ON a.id = p.account_id
 LEFT JOIN
     posts_poster AS po ON po.id = p.poster_id,
 LATERAL
@@ -130,6 +133,10 @@ LIMIT 100
             format_kwargs['main_where'] += ' AND p.datetime >= %(min_datetime)s'
             kwargs['min_datetime'] = min_datetime
 
+        if hub:
+            format_kwargs['main_where'] += ' AND a.hub_id= %(hub_id)s'
+            kwargs['hub_id'] = hub
+
         cursor = connection.cursor()
         sql = sql.format(**format_kwargs)
 
@@ -159,10 +166,7 @@ class Post(models.Model):
     added = models.DateTimeField(auto_now_add=True, db_index=True)
     poster = models.ForeignKey('Poster')
     content = models.TextField()
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    source = GenericForeignKey('content_type', 'object_id')
+    account = models.ForeignKey('Account')
 
     # Should be updated every time you add a stat
     last_stat = models.ForeignKey('Stat', null=True, related_name='last_of')
@@ -191,9 +195,7 @@ class Poster(models.Model):
     followers_count = models.PositiveIntegerField()
     friend = models.BooleanField(default=False)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    source = GenericForeignKey('content_type', 'object_id')
+    accounts = models.ManyToManyField('Account')
 
     def __unicode__(self):
         return u'@%s' % self.name
@@ -292,3 +294,20 @@ class PosterAverageStat(models.Model):
                 'minute',
             ),
         )
+
+
+class Account(models.Model):
+    name = models.CharField(max_length=100)
+    hub = models.ForeignKey('Hub', null=True, blank=True)
+    follow = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Hub(models.Model):
+    name = models.CharField(max_length=100)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+
+    def __unicode__(self):
+        return self.name

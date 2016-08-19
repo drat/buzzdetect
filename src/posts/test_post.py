@@ -92,6 +92,7 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
             parent=self.friend_post0,
             poster=self.create_poster(followers_count=100),
             minute=32,
+            account=self.account1,
         )
 
         self.add_stat(self.other_repost0, 1, 2)
@@ -105,6 +106,7 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
 
         self.other_post1 = self.create_post(
             poster=self.other_repost0.poster,
+            account=self.account1,
         )
         self.add_stat(self.other_post1, 1, 1)
         self.add_stat(self.other_post1, 2, 25)
@@ -263,7 +265,23 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
         self.assertResultEquals(
             self.friend_post0.pk,
             self.friend_post1.pk,
-            self.other_post1.pk,
             self.other_repost0.pk,
+            self.other_post1.pk,
+            order_by='s.reposts_per_followers_count DESC',
+        )
+
+        # test_hub0
+        self.assertResultEquals(
+            self.friend_post0.pk,
+            self.friend_post1.pk,
+            hub=self.hub0.pk,
+            order_by='s.reposts_per_followers_count DESC',
+        )
+
+        # test_hub1
+        self.assertResultEquals(
+            self.other_repost0.pk,
+            self.other_post1.pk,
+            hub=self.hub1.pk,
             order_by='s.reposts_per_followers_count DESC',
         )

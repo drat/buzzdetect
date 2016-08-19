@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-from .models import Post, Poster, PosterAverageStat, Stat
+from .models import Hub, Post, Poster, PosterAverageStat, Stat
+
+
+admin.site.register(Hub)
 
 
 class PostAdmin(admin.ModelAdmin):

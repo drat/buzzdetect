@@ -138,12 +138,13 @@ function reload() {
                 });
 
                 $('.tweet').slice(15).remove();
+                renderTweets();
+            },
+            complete: function() {
+                setTimeout(reload, 1000);
             }
         }
     );
-
-    renderTweets();
-    setTimeout(reload, 1000);
 };
 setTimeout(reload, 1000);
 });

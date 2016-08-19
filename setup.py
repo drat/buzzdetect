@@ -23,6 +23,9 @@ setup(
         'test': [
             'django-dbdiff',
             'freezegun',
+            'pytest',
+            'pytest-django',
+            'pytest-cov',
         ],
     },
     entry_points = {

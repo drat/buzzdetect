@@ -1,0 +1,11 @@
+{% extends 'admin/base.html' %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="/">Home</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'posts:post_list' %}">Posts</a>
+{% endblock %}

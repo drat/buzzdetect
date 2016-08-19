@@ -7,7 +7,7 @@ from django.views import generic
 import pytz
 
 from .forms import PostSearchForm
-from .models import Post, Poster, Stat
+from .models import Hub, Post, Poster, Stat
 
 
 class PosterDetail(generic.DetailView):
@@ -70,13 +70,9 @@ class PostList(generic.TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         c = super(PostList, self).get_context_data(*args, **kwargs)
-        c['form'] = PostSearchForm(self.request.GET or None)
-        c['results'] = Post.objects.filter_list(
-            filter_on_stat=self.request.GET.get('filter_on_stat', 'last'),
-            max_age_in_minutes=int(self.request.GET.get('max_age_in_minutes', '30')),
-            min_friends_reposts=int(self.request.GET.get('min_friends_reposts', '2')),
-            min_average_compare=float(self.request.GET.get('min_average_compare', 0)),
-            order_by=self.request.GET.get('order_by', None),
+        c['form'], c['results'] = PostSearchForm.post_list(
+            self.request.user,
+            self.request.GET
         )
         ids = [r['id'] for r in c['results']]
 

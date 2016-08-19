@@ -2,21 +2,18 @@ import os
 
 from django.db import models
 
+from posts.models import Account
+
 from twitter import OAuth
 from twitter import Twitter
 from twitter.api import TwitterHTTPError
 
 
-class TwitterAccount(models.Model):
-    name = models.CharField(max_length=255)
+class TwitterAccount(Account):
     consumer_key = models.CharField(max_length=255)
     consumer_secret = models.CharField(max_length=255)
     token = models.CharField(max_length=255)
     secret = models.CharField(max_length=255)
-    follow = models.BooleanField(default=True)
-
-    def __unicode__(self):
-        return self.name
 
     def get_oauth(self):
         if not getattr(self, '_oauth', None):

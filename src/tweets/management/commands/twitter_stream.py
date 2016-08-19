@@ -124,8 +124,7 @@ class TwitterStreamThread(threading.Thread):
         obj, created = Post.objects.update_or_create(
             upstream_id=data['id'],
             defaults=defaults,
-            content_type=ContentType.objects.get_for_model(self.account),
-            object_id=self.account.pk,
+            account=self.account.account_ptr
         )
 
         return obj
@@ -142,9 +141,10 @@ class TwitterStreamThread(threading.Thread):
         obj, created = Poster.objects.update_or_create(
             upstream_id=data['id'],
             defaults=defaults,
-            content_type=ContentType.objects.get_for_model(self.account),
-            object_id=self.account.pk,
         )
+
+        if not created and self.account.account_ptr not in obj.accounts.all():
+            obj.accounts.add(self.account.account_ptr)
 
         return obj
 
@@ -173,7 +173,7 @@ class Command(BaseCommand):
                 continue
 
             # Check if the account of this thread has been deleted
-            if thread_account.pk not in account_ids:
+            if thread_account and thread_account.pk not in account_ids:
                 print 'Stopping thread for %s' % thread_account
                 interrupt_thread(t)
 
