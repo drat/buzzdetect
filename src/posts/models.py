@@ -131,11 +131,11 @@ LIMIT 100
             kwargs['min_datetime'] = min_datetime
 
         if min_average_reposts:
-            format_kwargs['main_where'] += ' AND s.total_posts >= %(min_average_reposts)s'
+            format_kwargs['main_where'] += ' AND s.total_reposts >= %(min_average_reposts)s'
             kwargs['min_average_reposts'] = min_average_reposts
 
         if min_average_posts:
-            format_kwargs['main_where'] += ' AND s.total_reposts >= %(min_average_posts)s'
+            format_kwargs['main_where'] += ' AND s.total_posts >= %(min_average_posts)s'
             kwargs['min_average_posts'] = min_average_posts
 
         cursor = connection.cursor()
