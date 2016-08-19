@@ -80,6 +80,22 @@ blockquote.Tweet {
                 </td>
             </tr>
             {% endfor %}
+            <tr>
+                <th>Minute</th>
+                <th>Poster total reposts</th>
+                <th>Poster total posts</th>
+                <th>Poster average</th>
+                <th>Reposts</th>
+                <th>Average compare</th>
+            </tr>
+            <tr class="result">
+                <td>{{ object.result.minute }}</tD>
+                <td>{{ object.result.poster_total_reposts }}</td>
+                <td>{{ object.result.poster_total_posts }}</td>
+                <td>{{ object.result.poster_average }}</td>
+                <td>{{ object.result.reposts }}</td>
+                <td>{{ object.result.average_compare }}</td>
+            </tr>
         </table>
     </td>
     <td>
@@ -131,6 +147,8 @@ function reload() {
                                 $(this).insertAfter(div.find('.stat tr:first'));
                             }
                         });
+
+                        $(this).find('.result').html(div.find('.result').html());
                     } else {
                         // tweet does not exist: add
                         $('.tweet').eq($(this).index()).before($(this));
