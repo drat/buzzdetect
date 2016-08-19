@@ -38,4 +38,4 @@ class PostSearchForm(forms.Form):
     min_friends_reposts = forms.IntegerField(required=False, initial=2)
     min_average_compare = forms.FloatField(required=False, initial=1)
     min_average_posts = forms.IntegerField(required=False, initial=10)
-    min_average_reposts = forms.IntegerField(required=False, initial=7)
+    min_reposts = forms.IntegerField(required=False, initial=7)

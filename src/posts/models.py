@@ -47,7 +47,7 @@ class PostManager(models.Manager):
 
     def filter_list(self, filter_on_stat=None, max_age_in_minutes=None,
             min_friends_reposts=None, min_average_compare=None, now=None,
-            order_by=None, min_average_posts=None, min_average_reposts=None):
+            order_by=None, min_average_posts=None, min_reposts=None):
         sql = '''
 SELECT
     p.*,
@@ -130,9 +130,9 @@ LIMIT 100
             format_kwargs['main_where'] += ' AND p.datetime >= %(min_datetime)s'
             kwargs['min_datetime'] = min_datetime
 
-        if min_average_reposts:
-            format_kwargs['main_where'] += ' AND s.total_reposts >= %(min_average_reposts)s'
-            kwargs['min_average_reposts'] = min_average_reposts
+        if min_reposts:
+            format_kwargs['main_where'] += ' AND s.reposts >= %(min_reposts)s'
+            kwargs['min_reposts'] = min_reposts
 
         if min_average_posts:
             format_kwargs['main_where'] += ' AND s.total_posts >= %(min_average_posts)s'
