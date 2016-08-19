@@ -75,8 +75,10 @@ class PostList(generic.TemplateView):
             filter_on_stat=self.request.GET.get('filter_on_stat', 'last'),
             max_age_in_minutes=int(self.request.GET.get('max_age_in_minutes', '30')),
             min_friends_reposts=int(self.request.GET.get('min_friends_reposts', '2')),
-            min_average_compare=float(self.request.GET.get('min_average_compare', 0)),
+            min_average_compare=float(self.request.GET.get('min_average_compare', 1)),
             order_by=self.request.GET.get('order_by', None),
+            min_average_posts=self.request.GET.get('min_average_posts', 10),
+            min_average_reposts=self.request.GET.get('min_average_reposts', 7),
         )
         ids = [r['id'] for r in c['results']]
 
