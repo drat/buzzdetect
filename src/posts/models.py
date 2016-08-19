@@ -236,27 +236,29 @@ class StatManager(models.Manager):
             stat.acceleration = stat.speed
 
         average = None
-        for average in PosterAverageStat.objects.filter(poster=post.poster):
-            if average.minute == stat.minute:
-                break
+        if reposts >= 5:
+            for average in PosterAverageStat.objects.filter(poster=post.poster):
+                if average.minute == stat.minute:
+                    break
 
-        if average and average.minute == stat.minute:
-            average.total_posts += 1
-            average.total_reposts += stat.reposts
-            average.average = float(average.total_reposts) / average.total_posts
-        else:
-            average = PosterAverageStat(
-                poster=post.poster,
-                minute=stat.minute,
-                total_posts=1,
-                total_reposts=stat.reposts,
-                average=stat.reposts,
-            )
+            if average and average.minute == stat.minute:
+                average.total_posts += 1
+                average.total_reposts += stat.reposts
+                average.average = float(average.total_reposts) / average.total_posts
+            else:
+                average = PosterAverageStat(
+                    poster=post.poster,
+                    minute=stat.minute,
+                    total_posts=1,
+                    total_reposts=stat.reposts,
+                    average=stat.reposts,
+                )
 
         stat.save()
         Post.objects.filter(pk=post.pk).update(last_stat=stat)
 
-        average.save()
+        if average:
+            average.save()
         return stat
 
 class Stat(models.Model):
