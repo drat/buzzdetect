@@ -3,7 +3,12 @@ from django.contrib import admin
 from .models import Post, Poster, PosterAverageStat, Stat
 
 
+class StatInline(admin.TabularInline):
+    model = Stat
+
+
 class PostAdmin(admin.ModelAdmin):
+    inlines = [StatInline]
     list_display = (
         'poster',
         'content',
@@ -11,11 +16,21 @@ class PostAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'upstream_id',
+        'poster__upstream_id',
+        '=poster__name',
+        '=content',
     )
 admin.site.register(Post, PostAdmin)
 
 
+class PosterAverageStatInline(admin.TabularInline):
+    model = PosterAverageStat
+
+
 class PosterAdmin(admin.ModelAdmin):
+    search_fields = (
+        '=name',
+    )
     list_filter = (
         'friend',
     )
@@ -24,6 +39,9 @@ class PosterAdmin(admin.ModelAdmin):
         'followers_count',
         'friend',
     )
+    inlines = [
+        PosterAverageStatInline,
+    ]
 admin.site.register(Poster, PosterAdmin)
 
 
