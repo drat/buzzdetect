@@ -18,6 +18,9 @@ before_script:
 script:
 - tox
 - test -d .tox/$TOXENV/log && cat .tox/$TOXENV/log/*.log || true
+after_success:
+- travis_retry pip install codecov
+- codecov
 cache:
   directories:
   - .tox/$TOXENV
