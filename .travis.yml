@@ -7,7 +7,7 @@ env:
   - PIP_RETRIES=10
   - PIP_TIMEOUT=30
   matrix:
-  - TOXENV=checkqa
+  #- TOXENV=checkqa
   - TOXENV=test
 install:
 - travis_retry pip install -U pip
