@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 import subprocess
 
 from django.db import migrations, models
@@ -11,7 +12,7 @@ def check_processes(apps, schema_editor):
         subprocess.check_call('pgrep -f twitter_', shell=True)
     except subprocess.CalledProcessError:
         return True
-    else:
+    if not os.getenv('CI'):
         raise Exception(
             'Please stop all buzzdetect processes before this migration'
         )

@@ -12,7 +12,7 @@ def check_processes(apps, schema_editor):
         subprocess.check_call('pgrep -f twitter_', shell=True)
     except subprocess.CalledProcessError:
         return True
-    else:
+    if not os.getenv('CI'):
         raise Exception(
             'Please stop all buzzdetect processes before this migration'
         )
@@ -24,7 +24,7 @@ def check_source_required(apps, schema_editor):
     if Post.objects.count() == 0:
         return True
 
-    if not os.getenv('TWITTER_CONSUMER_KEY'):
+    if not os.getenv('CI') and not os.getenv('TWITTER_CONSUMER_KEY'):
         raise Exception(
             'This migration requires TWITTER_* environment variables if the'
             'post table is not empty'
