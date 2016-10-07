@@ -4,6 +4,7 @@
         "added": "2016-03-12T13:56:40Z",
         "content": "my super tweet",
         "datetime": "2016-03-12T13:56:40Z",
+        "kind": 2,
         "last_stat": null,
         "account": 1,
         "parent": null,

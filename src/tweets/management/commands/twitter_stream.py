@@ -114,11 +114,24 @@ class TwitterStreamThread(threading.Thread):
 
         poster = self.tweetter_get_or_create(data['user'])
 
+        kind = 1
+        extended = data.get('extended_entities', {})
+        if extended:
+            for media in extended.get('media', []):
+                if media['type'] == 'photo':
+                    kind = 2
+                elif media['type'] == 'video':
+                    kind = 3
+                else:
+                    print 'Unknown type', media['type']
+
+
         defaults = dict(
             parent=parent,
             poster=poster,
             datetime=parser.parse(data['created_at']),
             content=data['text'],
+            kind=kind,
         )
 
         obj, created = Post.objects.update_or_create(

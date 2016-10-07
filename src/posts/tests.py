@@ -34,7 +34,7 @@ class PostsTestMixin(object):
         self.friend = self.create_poster(friend=True)
 
     def create_post(self, minute=None, second=None, poster=None,
-            parent=None, account=None):
+            parent=None, account=None, kind=None):
 
         self.upstream_id += 1
 
@@ -44,7 +44,8 @@ class PostsTestMixin(object):
             content='',
             parent=parent,
             datetime=self.get_datetime(minute or 30, second or 0),
-            account=account or self.account0.account_ptr
+            account=account or self.account0.account_ptr,
+            kind=kind or 1,
         )
 
     def create_poster(self, friend=False, followers_count=None):

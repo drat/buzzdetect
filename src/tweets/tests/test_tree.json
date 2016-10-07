@@ -1,12 +1,13 @@
 [
 {
     "fields": {
+        "account": 1,
         "added": "2016-03-12T14:14:20Z",
         "content": "original super tweet",
         "datetime": "2016-03-12T13:56:40Z",
+        "kind": 1,
         "last_stat": null,
         "parent": null,
-        "account": 1,
         "poster": 1,
         "upstream_id": 3108350
     },
@@ -15,10 +16,11 @@
 },
 {
     "fields": {
+        "account": 1,
         "added": "2016-03-12T14:14:20Z",
         "content": "my super tweet",
-        "account": 1,
         "datetime": "2016-03-12T13:56:40Z",
+        "kind": 2,
         "last_stat": null,
         "parent": 1,
         "poster": 2,

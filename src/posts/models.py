@@ -47,7 +47,7 @@ class PostManager(models.Manager):
 
     def filter_list(self, filter_on_stat=None, max_age_in_minutes=None,
             min_friends_reposts=None, min_average_compare=None, now=None,
-            order_by=None, hub=None):
+            order_by=None, hub=None, kind=None):
         sql = '''
 SELECT
     p.*,
@@ -134,8 +134,14 @@ LIMIT 100
             kwargs['min_datetime'] = min_datetime
 
         if hub:
+            if hasattr(hub, 'pk'):
+                hub = hub.pk
             format_kwargs['main_where'] += ' AND a.hub_id= %(hub_id)s'
             kwargs['hub_id'] = hub
+
+        if kind:
+            format_kwargs['main_where'] += ' AND p.kind= %(kind)s'
+            kwargs['kind'] = kind
 
         cursor = connection.cursor()
         sql = sql.format(**format_kwargs)
@@ -155,6 +161,11 @@ LIMIT 100
         return result
 
 class Post(models.Model):
+    KIND_CHOICES = (
+        (1, 'Text'),
+        (2, 'Photo'),
+        (3, 'Video'),
+    )
     upstream_id = models.BigIntegerField(db_index=True, unique=True)
     parent = models.ForeignKey(
         'self',
@@ -166,6 +177,7 @@ class Post(models.Model):
     added = models.DateTimeField(auto_now_add=True, db_index=True)
     poster = models.ForeignKey('Poster')
     content = models.TextField()
+    kind = models.IntegerField(default=1, choices=KIND_CHOICES)
     account = models.ForeignKey('Account')
 
     # Should be updated every time you add a stat
