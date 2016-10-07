@@ -1,4 +1,8 @@
 from django import test
+from django.apps import apps
+from django.contrib.auth import get_user_model
+
+from .forms import PostSearchForm
 
 from .models import Post, Poster
 
@@ -72,6 +76,10 @@ class PostsToStatTest(PostsTestMixin, test.TransactionTestCase):
 
 class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
     def setUp(self):
+        self.superuser, c = get_user_model().objects.get_or_create(
+            username='superuser',
+            is_superuser=True,
+        )
         Poster.objects.all().delete()
 
         super(PostFilterTest, self).setUp()
@@ -93,13 +101,14 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
             poster=self.create_poster(followers_count=100),
             minute=32,
             account=self.account1,
+            kind=2,
         )
 
         self.add_stat(self.other_repost0, 1, 2)
         self.add_stat(self.other_repost0, 2, 10)
         self.add_stat(self.other_repost0, 3, 38)
 
-        self.friend_post1 = self.create_post()
+        self.friend_post1 = self.create_post(kind=2)
         self.add_stat(self.friend_post1, 1, 6)
         self.add_stat(self.friend_post1, 2, 18)
         self.add_stat(self.friend_post1, 3, 20)
@@ -107,6 +116,7 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
         self.other_post1 = self.create_post(
             poster=self.other_repost0.poster,
             account=self.account1,
+            kind=3,
         )
         self.add_stat(self.other_post1, 1, 1)
         self.add_stat(self.other_post1, 2, 25)
@@ -119,7 +129,10 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
 
     def assertResultEquals(self, *expected, **kwargs):
         result = list(Post.objects.filter_list(**kwargs))
-        import pprint; pprint.pprint(result)
+        self.assertEqual([r['id'] for r in result], list(expected))
+
+        # Try with the form now
+        form, result = PostSearchForm.post_list(user=self.superuser, data=kwargs)
         self.assertEqual([r['id'] for r in result], list(expected))
 
     def test_filter(self):
@@ -283,5 +296,27 @@ class PostFilterTest(PostsTestMixin, test.TransactionTestCase):
             self.other_repost0.pk,
             self.other_post1.pk,
             hub=self.hub1.pk,
+            order_by='s.reposts_per_followers_count DESC',
+        )
+
+        # test_kind1
+        self.assertResultEquals(
+            self.friend_post0.pk,
+            kind=1,
+            order_by='s.reposts_per_followers_count DESC',
+        )
+
+        # test_kind2
+        self.assertResultEquals(
+            self.friend_post1.pk,
+            self.other_repost0.pk,
+            kind=2,
+            order_by='s.reposts_per_followers_count DESC',
+        )
+
+        # test_kind3
+        self.assertResultEquals(
+            self.other_post1.pk,
+            kind=3,
             order_by='s.reposts_per_followers_count DESC',
         )

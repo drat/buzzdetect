@@ -31,6 +31,13 @@ class TestTwitterStream(test.TransactionTestCase):
                 u'name': 'author',
                 u'followers_count': 3,
             },
+            u'extended_entities': {
+                u'media': [
+                    {
+                        u'type': u'photo',
+                    }
+                ]
+            }
         }
 
         self.account = TwitterAccount.objects.create(

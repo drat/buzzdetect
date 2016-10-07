@@ -16,6 +16,8 @@ class PostSearchForm(forms.Form):
         ('s.speed DESC', 'Speed'),
     )
 
+    now = forms.DateTimeField(required=False)
+
     order_by = forms.ChoiceField(
         choices=ORDER_BY_CHOICES,
         initial=ORDER_BY_CHOICES[0][0],
@@ -35,13 +37,15 @@ class PostSearchForm(forms.Form):
         required=False,
     )
 
-    max_age_in_minutes = forms.IntegerField(required=False, initial=30)
-    min_friends_reposts = forms.IntegerField(required=False, initial=1)
-    min_average_compare = forms.FloatField(
-        required=False,
-        initial=1.5
-    )
+    max_age_in_minutes = forms.IntegerField(required=False)
+    min_friends_reposts = forms.IntegerField(required=False)
+    min_average_compare = forms.FloatField(required=False)
     hub = forms.ModelChoiceField(Hub.objects.all(), required=False)
+    kind = forms.ChoiceField(
+        choices=(('', 'Any'),) + Post.KIND_CHOICES,
+        required=False,
+        initial=''
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -50,7 +54,7 @@ class PostSearchForm(forms.Form):
             if not self.user.is_superuser:
                 self.fields['hub'].queryset = Hub.objects.filter(users=self.user)
                 self.fields['hub'].required = True
-        self.fields['hub'].initial = self.fields['hub'].queryset.first().pk
+        self.fields['hub'].initial = self.fields['hub'].queryset.first()
 
     @classmethod
     def post_list(cls, user, data):
@@ -61,6 +65,6 @@ class PostSearchForm(forms.Form):
         }
 
         if form.is_valid():
-            kwargs.update(kwargs)
+            kwargs.update(form.cleaned_data)
 
         return form, Post.objects.filter_list(**kwargs)
