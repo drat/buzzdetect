@@ -7,5 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<a href="{% url 'posts:post_list' %}">Posts</a>
+<ul>
+    <li>
+        <a href="{% url 'posts:post_list' %}">Posts stream</a>
+    </li>
+    <li>
+        <a href="{% url 'admin:tweets_twitteraccount_add' %}">Add Twitter Account</a>
+    </li>
+    <li>
+        <a href="{% url 'admin:auth_user_add' %}">Add a User</a>
+    </li>
+</ul>
 {% endblock %}
