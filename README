@@ -1,24 +1,24 @@
 Requirements
 ============
 
-Python 2.7 (for twitter package), Django 1.9, PostgreSQL (for upsert).
+Python 2.7 (for twitter package), Django 1.9, PostgreSQL 9.5.
 
 Install
 =======
 
-First, copy local.sh.example to local.sh and fill it with your credentials.
-Then, source local.sh
+Create a buzzdetect database.
 
 Then, pip install the repo::
 
-    # Remove [test] to install without test requirements, they are not
-    # necessary to test in tox
-    pip install -e git+https://github.com/jpic/buzzdetect.git#egg=buzzdetect[test]
+    pip install -e git+https://github.com/jpic/buzzdetect.git#egg=buzzdetect
 
 Then, provision the database and create an admin::
 
     buzzdetect migrate
     buzzdetect createsuperuser
+
+Then visit the administration to add some upstream accounts such as your
+twitter account.
 
 Usage
 =====
@@ -27,15 +27,14 @@ Follow your twitter stream to create tweets::
 
     buzzdetect twitter_stream
 
-Log retweets, run this command every minute or so::
+Log retweets, you need to keep that runnir at the same time as twitter_stream::
 
     buzzdetect twitter_retweets
 
 Run the development server::
 
-    buzzdetect runserver
+    DEBUG=1 buzzdetect runserver
 
 Run tests::
 
-    buzzdetect test tweets
-    # Or run tox from inside the repo
+    tox
