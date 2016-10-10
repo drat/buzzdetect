@@ -75,6 +75,14 @@ blockquote.Tweet {
             </tr>
             {% endfor %}
         </table>
+        <table>
+            <tr>
+                <th>Poster Average</th>
+                <td>{{ object.result.poster_average|floatformat }}</td>
+                <th>Average compare</th>
+                <td>{{ object.result.average_compare|floatformat }}</td>
+            </tr>
+        </table>
     </td>
     <td>
         <blockquote class="body" data-tweet-id="{{ object.upstream_id }}">

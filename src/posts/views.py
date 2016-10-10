@@ -82,4 +82,7 @@ class PostList(generic.TemplateView):
             ).select_related('poster').prefetch_related('stat_set')
         )
         c['posts'].sort(key=lambda p: ids.index(p.pk))
+
+        for i in range(0, len(ids)):
+            c['posts'][i].result = c['results'][i]
         return c
