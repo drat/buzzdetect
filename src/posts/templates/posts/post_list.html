@@ -54,9 +54,6 @@ blockquote.Tweet {
                 <th>
                     Accel
                 </th>
-                <th>
-                    Repost per follower
-                </th>
             </tr>
             {% for stat in object.stat_set.all %}
             <tr data-minute="{{ stat.minute }}">
@@ -74,9 +71,6 @@ blockquote.Tweet {
                 </td>
                 <td>
                     {{ stat.acceleration }}
-                </td>
-                <td>
-                    {{ stat.reposts_per_followers_count }}
                 </td>
             </tr>
             {% endfor %}
