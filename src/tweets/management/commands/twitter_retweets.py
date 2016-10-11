@@ -20,7 +20,9 @@ class Command(BaseCommand):
     def insert_retweets():
         now = datetime.now(tz=pytz.utc)
 
-        tweets = Post.objects.posts_to_stat(1, 5)[:100]
+        tweets = Post.objects.posts_to_stat(1, 5).exclude(
+            account__twitteraccount=None
+        )[:100]
 
         tweets_dict = {
             str(t.upstream_id): t for t in list(tweets)

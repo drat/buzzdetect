@@ -18,6 +18,8 @@ setup(
         'twitter',
         'django-manager-utils',
         'psycopg2',
+        'requests',
+        'feedparser',
     ],
     extras_require={
         'test': [

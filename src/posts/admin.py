@@ -21,6 +21,7 @@ admin.site.register(Post, PostAdmin)
 class PosterAdmin(admin.ModelAdmin):
     list_filter = (
         'friend',
+        'accounts',
     )
     list_display = (
         'name',

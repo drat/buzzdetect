@@ -166,7 +166,7 @@ class Post(models.Model):
         (2, 'Photo'),
         (3, 'Video'),
     )
-    upstream_id = models.BigIntegerField(db_index=True, unique=True)
+    upstream_id = models.CharField(max_length=50, unique=True)
     parent = models.ForeignKey(
         'self',
         related_name='children',
@@ -202,7 +202,7 @@ class Post(models.Model):
 
 
 class Poster(models.Model):
-    upstream_id = models.BigIntegerField(unique=True)
+    upstream_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=150)
     followers_count = models.PositiveIntegerField()
     friend = models.BooleanField(default=False)
