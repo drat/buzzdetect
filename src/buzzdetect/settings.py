@@ -160,3 +160,7 @@ USE_TZ = True
 
 STATIC_URL = '/collected/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected')
+
+
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/'
