@@ -20,6 +20,7 @@ setup(
         'psycopg2',
         'requests',
         'feedparser',
+        'django-braces',
     ],
     extras_require={
         'test': [
