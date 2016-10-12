@@ -41,17 +41,18 @@ class Command(BaseCommand):
         )
 
         views = int(entry.media_statistics['views'])
-        if c:
-            print 'Added post', post
-            return Stat.objects.add_for_post(posts, views)
 
         # We want to update once per hour
         hours_since = post.minutes_since(now) / 60
+        minute = hours_since * 60
+
+        if c:
+            print 'Added post', post
+            return Stat.objects.add_for_post(post, views, post.datetime)
 
         if hours_since == 0:
             return  # it's been less than an hour
 
-        minute = hours_since * 60
         if post.stat_set.filter(minute=minute).count():
             return  # we already have a stat for this hour
 
