@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from braces.views import LoginRequiredMixin
+
 from django.core.cache import cache
 from django.db.models import Prefetch
 from django.views import generic
@@ -10,7 +12,7 @@ from .forms import PostSearchForm
 from .models import Hub, Post, Poster, Stat
 
 
-class PosterDetail(generic.DetailView):
+class PosterDetail(LoginRequiredMixin, generic.DetailView):
     model = Poster
     show_data = [
         'name',
@@ -45,7 +47,7 @@ class PosterDetail(generic.DetailView):
 
         return c
 
-class PostDetail(generic.DetailView):
+class PostDetail(LoginRequiredMixin, generic.DetailView):
     model = Post
 
     def get_queryset(self):
@@ -64,7 +66,7 @@ class PostDetail(generic.DetailView):
         )
 
 
-class PostList(generic.TemplateView):
+class PostList(LoginRequiredMixin, generic.TemplateView):
     model = Post
     template_name = 'posts/post_list.html'
 
