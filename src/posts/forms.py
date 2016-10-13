@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import widgets
 
 from .models import Hub, Post
 
@@ -16,7 +17,7 @@ class PostSearchForm(forms.Form):
         ('s.speed DESC', 'Speed'),
     )
 
-    now = forms.DateTimeField(required=False)
+    now = forms.DateTimeField(required=False, widget=widgets.HiddenInput)
 
     source = forms.ChoiceField(
         choices=(
