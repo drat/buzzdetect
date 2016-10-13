@@ -18,6 +18,13 @@ class PostSearchForm(forms.Form):
 
     now = forms.DateTimeField(required=False)
 
+    source = forms.ChoiceField(
+        choices=(
+            ('youtubes', 'Youtube'),
+            ('tweets', 'Twitter'),
+        )
+    )
+
     order_by = forms.ChoiceField(
         choices=ORDER_BY_CHOICES,
         initial=ORDER_BY_CHOICES[0][0],

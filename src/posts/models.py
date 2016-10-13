@@ -47,7 +47,7 @@ class PostManager(models.Manager):
 
     def filter_list(self, filter_on_stat=None, max_age_in_minutes=None,
             min_friends_reposts=None, min_average_compare=None, now=None,
-            order_by=None, hub=None, kind=None):
+            order_by=None, hub=None, kind=None, source=None):
         sql = '''
 SELECT
     p.*,
@@ -69,6 +69,7 @@ FROM
     posts_post AS p
 LEFT JOIN
     posts_account AS a ON a.id = p.account_id
+{join}
 LEFT JOIN
     posts_poster AS po ON po.id = p.poster_id,
 LATERAL
@@ -111,6 +112,7 @@ LIMIT 100
             'lateral_where': '',
             'main_order_by': order_by or 'p.datetime DESC',
             'main_where': 'TRUE',
+            'join': '',
         }
         kwargs = {}
 
@@ -142,6 +144,17 @@ LIMIT 100
         if kind:
             format_kwargs['main_where'] += ' AND p.kind= %(kind)s'
             kwargs['kind'] = kind
+
+        if source:
+            if source == 'youtubes':
+                table = 'youtubes_youtubeaccount'
+            elif source == 'tweets':
+                table = 'tweets_twitteraccount'
+
+            format_kwargs['main_where'] += \
+                ' AND child.account_ptr_id IS NOT NULL'
+            format_kwargs['join'] = \
+                'LEFT JOIN %s AS child ON a.id = child.account_ptr_id' % table
 
         cursor = connection.cursor()
         sql = sql.format(**format_kwargs)
