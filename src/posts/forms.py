@@ -45,9 +45,9 @@ class PostSearchForm(forms.Form):
         required=False,
     )
 
-    max_age_in_minutes = forms.IntegerField(required=False)
+    max_age_in_minutes = forms.IntegerField(required=False, initial=30)
     min_friends_reposts = forms.IntegerField(required=False)
-    min_average_compare = forms.FloatField(required=False)
+    min_average_compare = forms.FloatField(required=False, initial=1.5)
     hub = forms.ModelChoiceField(Hub.objects.all(), required=False)
     kind = forms.ChoiceField(
         choices=(('', 'Any'),) + Post.KIND_CHOICES,
