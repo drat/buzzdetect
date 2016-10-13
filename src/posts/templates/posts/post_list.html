@@ -67,10 +67,10 @@ blockquote.Tweet {
                     {{ stat.friends_reposts }}
                 </td>
                 <td>
-                    {{ stat.speed }}
+                    {{ stat.speed|floatformat:"3" }}
                 </td>
                 <td>
-                    {{ stat.acceleration }}
+                    {{ stat.acceleration|floatformat:"3" }}
                 </td>
             </tr>
             {% endfor %}
@@ -78,9 +78,9 @@ blockquote.Tweet {
         <table>
             <tr>
                 <th>Poster Average</th>
-                <td>{{ object.result.poster_average|floatformat }}</td>
+                <td>{{ object.result.poster_average|floatformat:"2" }}</td>
                 <th>Average compare</th>
-                <td>{{ object.result.average_compare|floatformat }}</td>
+                <td>{{ object.result.average_compare|floatformat:"2" }}</td>
             </tr>
         </table>
     </td>
