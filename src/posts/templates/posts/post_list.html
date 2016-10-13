@@ -19,18 +19,18 @@ blockquote {
 blockquote.Tweet {
     display: block;
 }
+.post-list-form p {
+    display: inline;
+}
+#id_max_age_in_minutes, #id_min_friends_reposts, #id_min_average_compare {
+    width: 40px;
+}
 </style>
 
 <div style="min-height:2000px">
-<form method="GET" action="">
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td colspan="2">
-                <input type="submit" value="Filter" />
-            </td>
-        </tr>
-    </table>
+<form method="GET" action="" class="post-list-form">
+    {{ form.as_p }}
+    <input type="submit" value="Filter" />
 </form>
 
 <table>
