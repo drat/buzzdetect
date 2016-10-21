@@ -7,6 +7,7 @@ from .models import Hub, Post
 class PostSearchForm(forms.Form):
     ORDER_BY_CHOICES = (
         ('p.datetime DESC', 'Time'),
+        ('s.average_compare DESC', 'Average compare'),
         ('s.friends_reposts DESC', 'Friend reposts'),
         ('s.reposts DESC', 'Total reposts'),
         (
