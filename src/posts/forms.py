@@ -21,7 +21,9 @@ class PostSearchForm(forms.Form):
     now = forms.DateTimeField(required=False, widget=widgets.HiddenInput)
 
     source = forms.ChoiceField(
+        required=False,
         choices=(
+            ('', 'Any'),
             ('youtubes', 'Youtube'),
             ('tweets', 'Twitter'),
         )
