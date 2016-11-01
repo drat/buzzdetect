@@ -9,7 +9,7 @@
         "account": 1,
         "parent": null,
         "poster": 1,
-        "upstream_id": 3108351
+        "upstream_id": "3108351"
     },
     "model": "posts.post",
     "pk": 1
