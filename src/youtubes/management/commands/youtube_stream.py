@@ -10,7 +10,7 @@ from django.db import transaction
 from django.template.defaultfilters import slugify
 
 from posts.models import Post, Poster, Stat
-from youtubes.models import YoutubeAccount, YoutubeAPIKey
+from youtubes.models import YoutubeAccount
 
 import pytz
 

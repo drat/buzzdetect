@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import YoutubeAccount, YoutubeAPIKey, YoutubeRequest
+from .models import YoutubeAccount, YoutubeRequest
 
 
 def sync_accounts(self, request, queryset):
@@ -15,4 +15,3 @@ class YoutubeAccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(YoutubeAccount, YoutubeAccountAdmin)
-admin.site.register(YoutubeAPIKey)

@@ -5,18 +5,12 @@ from django.db import models
 from posts.models import Account, Poster
 
 
-class YoutubeAPIKey(models.Model):
-    api_key = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return self.api_key
-
-
 class YoutubeAccount(Account):
     channel_id = models.CharField(max_length=100, unique=True)
+    api_key = models.CharField(max_length=100)
 
     def sync(self, subscriptions=None):
-        subscriptions = subscriptions or YoutubeRequest().get_items(
+        subscriptions = subscriptions or YoutubeRequest(self).get_items(
             'subscriptions',
             channelId=self.channel_id,
             part='contentDetails,snippet',
@@ -42,16 +36,11 @@ class YoutubeAccount(Account):
 
 
 class YoutubeRequest(object):
+    def __init__(self, account):
+        self.account = account
+
     def get(self, endpoint, **params):
-        for key in YoutubeAPIKey.objects.all():
-            params['key'] = key.api_key
-
-            try:
-                return self._get(endpoint, params)
-            except:
-                continue
-
-    def _get(self, endpoint, params):
+        params['key'] = self.account.api_key
         url = 'https://www.googleapis.com/youtube/v3/' + endpoint
         return requests.get(url, params=params)
 
