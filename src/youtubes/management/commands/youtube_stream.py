@@ -5,6 +5,8 @@ import pytz
 
 from datetime import datetime, timedelta
 
+from dateutil import parser
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.template.defaultfilters import slugify
@@ -34,7 +36,7 @@ class Command(BaseCommand):
     def update_post(poster, entry, now):
         post, c = poster.post_set.get_or_create(
             upstream_id=entry.yt_videoid,
-            datetime=entry.published,
+            datetime=parser.parse(entry.published),
             content=entry.summary,
             account=poster.accounts.all()[0],
             kind=3,  # video
